@@ -15,10 +15,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
 <script>
-tailwind.config={theme:{extend:{
-  fontFamily:{fun:['"Baloo 2"','Nunito','system-ui','sans-serif'],body:['Nunito','system-ui','sans-serif'],jawi:['Amiri','"Traditional Arabic"','serif']},
-  borderRadius:{'4xl':'2rem','5xl':'2.75rem'}
-}}}
+/* Guarded: on a network that blocks the Tailwind CDN this must not throw,
+   so the rest of the app still boots and the notice below can show. */
+if(window.tailwind){
+  tailwind.config={theme:{extend:{
+    fontFamily:{fun:['"Baloo 2"','Nunito','system-ui','sans-serif'],body:['Nunito','system-ui','sans-serif'],jawi:['Amiri','"Traditional Arabic"','serif']},
+    borderRadius:{'4xl':'2rem','5xl':'2.75rem'}
+  }}};
+}
+/* Fonts and confetti degrade quietly (system fonts, no confetti), but without
+   Tailwind the page would render unstyled — tell the parent plainly instead. */
+window.addEventListener('load',function(){
+  if(window.tailwind) return;
+  var d=document.createElement('div');
+  d.setAttribute('style','position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;'+
+    'background:#eef2ff;font:16px/1.55 system-ui,-apple-system,sans-serif;color:#1e293b;text-align:center');
+  d.innerHTML='<div style="max-width:430px">'+
+    '<div style="font-size:56px">📡</div>'+
+    '<h1 style="font-size:25px;margin:14px 0 8px;font-weight:800">Perlukan internet</h1>'+
+    '<p style="margin:0 0 18px">Aplikasi ini perlu sambungan internet pada kali pertama untuk memuatkan gaya paparan. '+
+    'Sila sambung ke Wi-Fi, kemudian muat semula halaman ini.</p>'+
+    '<button id="klReload" style="min-height:56px;padding:0 30px;border:0;border-radius:28px;'+
+    'background:#6366f1;color:#fff;font-size:18px;font-weight:700">Muat Semula</button></div>';
+  document.body.appendChild(d);
+  var b=document.getElementById('klReload');
+  if(b) b.addEventListener('click',function(){ location.reload(); });
+});
 </script>
 <style>
 :root{--pop:cubic-bezier(.34,1.56,.64,1)}
