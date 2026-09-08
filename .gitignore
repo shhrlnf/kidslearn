@@ -1,0 +1,4 @@
+# local backups of previous versions
+index-v*-backup.html
+# local hosting notes (contains private links / local paths)
+HOSTING.md
