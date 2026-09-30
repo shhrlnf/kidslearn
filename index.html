@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="KidsLearn">
-<title>KidsLearn · Prasekolah KSPK &amp; Tahun 1 KSSR · 3–7 Tahun</title>
+<title>KidsLearn · Prasekolah KSPK &amp; KSSR Tahun 1–6 · 3–12 Tahun</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +97,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
     <div class="text-center anim-in">
       <div class="text-6xl floaty">🎒</div>
       <h1 class="font-fun text-4xl sm:text-5xl font-extrabold text-indigo-600 mt-2">KidsLearn KSPK</h1>
-      <p class="font-fun text-lg text-slate-500 mt-1">Belajar dulu, kemudian kuiz! · Umur 3–7 tahun</p>
+      <p class="font-fun text-lg text-slate-500 mt-1">Belajar dulu, kemudian kuiz! · Umur 3–12 tahun</p>
     </div>
 
     <div id="existingWrap" class="mt-7 hidden">
@@ -167,7 +167,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
     <button id="btnParent" class="tapp mt-6 w-full min-h-[72px] rounded-4xl bg-gradient-to-r from-slate-700 to-slate-900 text-white shadow-chunky font-fun text-xl">
       📈 Laporan Ibu Bapa / Guru
     </button>
-    <p class="text-center font-fun text-xs text-slate-400 mt-3">Selari KSPK (4–6 tahun) · PERMATA/Taska (3 tahun) · KSSR Tahun 1 (7 tahun)</p>
+    <p class="text-center font-fun text-xs text-slate-400 mt-3">Selari KSPK (4–6 tahun) · PERMATA/Taska (3 tahun) · KSSR Tahun 1–6 (7–12 tahun)</p>
   </div>
 </section>
 
@@ -1341,7 +1341,7 @@ const SUBJECTS=[
     {q:'Biru + Merah = ?',bigMix:['#3b82f6','#ef4444'],say:'Biru campur merah jadi apa?',opts:[{l:'Ungu',c:'#8b5cf6',ok:1},{l:'Hijau',c:'#22c55e'},{l:'Oren',c:'#f97316'}]}
    ]},
 
-  {id:'ks_kanvas',title:'Bab 4: Kanvas Mewarna',sub:'Berus, warna & cop gambar',emoji:'🖌️',sticker:'🖼️',a:[3,4,5,6,7],studio:1,
+  {id:'ks_kanvas',title:'Bab 4: Kanvas Mewarna',sub:'Berus, warna & cop gambar',emoji:'🖌️',sticker:'🖼️',a:[3,4,5,6,7,8,9,10,11,12],studio:1,
    slides:[
     {t:'intro',emoji:'🖌️',title:'Studio Seni',text:'Pilih warna, saiz berus dan cop gambar. Lukis apa sahaja!',say:'Studio seni. Pilih warna, saiz berus dan cop gambar.'},
     {t:'brushdemo',title:'Cuba berus di sini',hint:'Guna jari untuk melukis dalam petak ini!'}
@@ -4753,6 +4753,876 @@ $('btnPractice').addEventListener('click',()=>{ sfx.click(); openPracticePicker(
 $('prSwitch').addEventListener('click',()=>{ sfx.click(); openPracticePicker(); });
 $('btnClosePick').addEventListener('click',()=>{ sfx.click(); $('modalPick').classList.add('hidden'); });
 $('modalPick').addEventListener('click',e=>{ if(e.target===$('modalPick')) $('modalPick').classList.add('hidden'); });
+</script>
+<script>
+/* =====================================================================
+   SEKOLAH RENDAH — Tahun 2 hingga Tahun 6 (umur 8–12)
+   Band umur baharu + nada paparan yang lebih matang untuk murid besar.
+   ===================================================================== */
+AGES.push(
+  {v:8, l:'8 Tahun', sub:'Tahun 2 · KSSR', emoji:'📗',tip:'Fokus: nombor hingga 1000, sifir, imbuhan, present continuous'},
+  {v:9, l:'9 Tahun', sub:'Tahun 3 · KSSR', emoji:'📘',tip:'Fokus: darab & bahagi, pecahan, past tense, peribahasa'},
+  {v:10,l:'10 Tahun',sub:'Tahun 4 · KSSR', emoji:'📙',tip:'Fokus: perpuluhan, sudut, sistem badan, Sejarah bermula'},
+  {v:11,l:'11 Tahun',sub:'Tahun 5 · KSSR', emoji:'📕',tip:'Fokus: peratus, purata, tenaga, zaman penjajahan'},
+  {v:12,l:'12 Tahun',sub:'Tahun 6 · KSSR', emoji:'🎓',tip:'Fokus: nisbah, algebra asas, kemerdekaan, ulang kaji'}
+);
+
+/* Murid 8 tahun ke atas tidak mahu paparan terlalu kebudak-budakan:
+   kecilkan emoji gergasi, hentikan animasi terapung, tukar nada ayat. */
+function isOlder(){ return myAge()>=8; }
+(function(){
+  const st=document.createElement('style');
+  st.textContent=
+    'body.mature .floaty{animation:none}'+
+    'body.mature .text-7xl{font-size:3rem;line-height:1.05}'+
+    'body.mature .text-6xl{font-size:2.5rem;line-height:1.05}'+
+    'body.mature .text-5xl{font-size:2.1rem;line-height:1.1}'+
+    'body.mature .tapp:active{transform:scale(.97)}'+
+    'body.mature #homeAvatar{font-size:2rem}';
+  document.head.appendChild(st);
+})();
+function applyMaturity(){
+  try{ document.body.classList.toggle('mature',isOlder()); }catch(e){}
+}
+/* hook into the existing home render without rewriting it */
+const _renderHome_kid=renderHome;
+renderHome=function(){
+  _renderHome_kid.apply(this,arguments);
+  applyMaturity();
+  const p=profile(); if(!p) return;
+  if(isOlder()){
+    const g=document.querySelector('#sc-home .font-fun.text-slate-400.text-sm');
+    if(g) g.textContent='Murid';
+    const sb=$('stickerBook');
+    if(sb) sb.querySelectorAll('p').forEach(function(el){
+      if(el.textContent.indexOf('Buku Pelekat')===0) el.innerHTML=el.innerHTML.replace('🏅 Buku Pelekat','🏅 Lencana Topik');
+    });
+  }
+};
+const _renderChapters_kid=renderChapters;
+renderChapters=function(sid){
+  _renderChapters_kid.apply(this,arguments);
+  applyMaturity();
+  if(isOlder()){
+    const tip=document.querySelector('#chapterList .bg-white\\/70 p');
+    if(tip) tip.innerHTML='<span class="text-amber-400">💡</span> Setiap topik: <b>nota ringkas</b> dahulu, kemudian <b>latihan</b>. Guna <b>Latihan Pintar</b> untuk ulang kaji campur.';
+  }
+};
+</script>
+<script>
+/* =====================================================================
+   MATEMATIK — Tahun 2 hingga Tahun 6 (umur 8–12)
+   ===================================================================== */
+chapAdd('mt',null,[
+/* ---------------- TAHUN 2 ---------------- */
+ {id:'mt_t2_1000',title:'T2: Nombor hingga 1,000',sub:'Ratus · puluh · sa',emoji:'🔢',sticker:'🔢',a:[8],
+  slides:[
+   {t:'intro',emoji:'🔢',title:'Nilai Tempat',text:'352 bermaksud 3 ratus, 5 puluh dan 2 sa.',say:'Tiga ratus lima puluh dua bermaksud tiga ratus, lima puluh, dan dua sa.'},
+   {t:'soundboard',title:'Nilai tempat',hint:'Tekan untuk dengar.',items:[
+     {e:'💯',l:'Ratus',say:'Digit pertama dari kiri ialah nilai ratus.'},
+     {e:'🔟',l:'Puluh',say:'Digit tengah ialah nilai puluh.'},
+     {e:'1️⃣',l:'Sa',say:'Digit terakhir ialah nilai sa.'},
+     {e:'🧮',l:'Contoh 476',say:'Empat ratus tujuh puluh enam. Empat ratus, tujuh puluh, enam sa.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Dalam 352, digit 5 bernilai…',say:'Dalam tiga ratus lima puluh dua, digit lima bernilai berapa?',opts:[{g:'50',ok:1},{g:'5'},{g:'500'}]},
+   {t:'practice',title:'Cuba jawab',q:'200 + 60 + 4 = ?',say:'Dua ratus campur enam puluh campur empat?',opts:[{g:'264',ok:1},{g:'2604'},{g:'246'}]},
+   {t:'numline',title:'Garis nombor 91–100',hint:'Tekan nombor untuk dengar namanya.',from:91,to:100}
+  ],
+  quiz:[
+   {q:'Dalam 352, digit 5 bernilai…',big:'🔢',say:'Dalam tiga ratus lima puluh dua, digit lima bernilai berapa?',opts:[{g:'50',ok:1},{g:'5'},{g:'500'}],why:'Digit 5 berada di tempat puluh, jadi nilainya 5 × 10 = 50.'},
+   {q:'200 + 60 + 4 = ?',big:'🧮',say:'Dua ratus campur enam puluh campur empat sama dengan?',opts:[{g:'264',ok:1},{g:'2604'},{g:'246'}],why:'Susun ikut nilai tempat: 2 ratus, 6 puluh, 4 sa → 264.'},
+   {q:'Nombor selepas 499 ialah…',big:'➡️',say:'Nombor selepas empat ratus sembilan puluh sembilan ialah?',opts:[{g:'500',ok:1},{g:'490'},{g:'4100'}],why:'499 + 1 = 500. Sa penuh jadi puluh, puluh penuh jadi ratus.'},
+   {q:'Yang manakah PALING BESAR?',big:'📈',say:'Nombor manakah paling besar?',opts:[{g:'812',ok:1},{g:'128'},{g:'281'}],why:'Bandingkan digit ratus dahulu: 8 ratus lebih besar daripada 2 ratus dan 1 ratus.'},
+   {q:'607 dibaca sebagai…',big:'🗣️',say:'Enam kosong tujuh dibaca sebagai?',opts:[{g:'Enam ratus tujuh',ok:1},{g:'Enam puluh tujuh'},{g:'Enam ratus tujuh puluh'}],why:'Digit puluh ialah 0, jadi tiada puluh: enam ratus dan tujuh sa.'}
+  ]},
+ {id:'mt_t2_sifir',title:'T2: Sifir 2, 5 & 10',sub:'Darab sebagai tambah berulang',emoji:'✖️',sticker:'✖️',a:[8],
+  slides:[
+   {t:'intro',emoji:'✖️',title:'Darab',text:'Darab ialah tambah berulang: 3 × 4 bermaksud 4 + 4 + 4.',say:'Darab ialah tambah berulang. Tiga darab empat bermaksud empat campur empat campur empat.'},
+   {t:'soundboard',title:'Sifir 2',hint:'Tekan untuk dengar.',items:[
+     {e:'2️⃣',l:'2 × 1 = 2',say:'Dua darab satu sama dengan dua.'},
+     {e:'2️⃣',l:'2 × 5 = 10',say:'Dua darab lima sama dengan sepuluh.'},
+     {e:'2️⃣',l:'2 × 8 = 16',say:'Dua darab lapan sama dengan enam belas.'},
+     {e:'2️⃣',l:'2 × 10 = 20',say:'Dua darab sepuluh sama dengan dua puluh.'}]},
+   {t:'soundboard',title:'Sifir 5 & 10',hint:'Tekan untuk dengar coraknya.',items:[
+     {e:'5️⃣',l:'5, 10, 15, 20…',say:'Sifir lima berakhir dengan lima atau kosong.'},
+     {e:'🔟',l:'10, 20, 30, 40…',say:'Sifir sepuluh sentiasa berakhir dengan kosong.'},
+     {e:'5️⃣',l:'5 × 6 = 30',say:'Lima darab enam sama dengan tiga puluh.'},
+     {e:'🔟',l:'10 × 7 = 70',say:'Sepuluh darab tujuh sama dengan tujuh puluh.'}]},
+   {t:'practice',title:'Cuba jawab',q:'3 × 4 = ?',say:'Tiga darab empat sama dengan?',opts:[{g:'12',ok:1},{g:'7'},{g:'34'}]},
+   {t:'pattern',title:'Sambung sifir 5',seq:['5','10','15','20'],ans:'25',opts:['25','21','30'],say:'Sambung sifir lima.'}
+  ],
+  quiz:[
+   {q:'3 × 4 = ?',big:'✖️',say:'Tiga darab empat sama dengan?',opts:[{g:'12',ok:1},{g:'7'},{g:'34'}],why:'3 × 4 bermaksud 4 + 4 + 4 = 12.'},
+   {q:'2 × 8 = ?',big:'2️⃣',say:'Dua darab lapan sama dengan?',opts:[{g:'16',ok:1},{g:'10'},{g:'18'}],why:'8 + 8 = 16. Sifir 2 ialah nombor berganda.'},
+   {q:'5 × 6 = ?',big:'5️⃣',say:'Lima darab enam sama dengan?',opts:[{g:'30',ok:1},{g:'11'},{g:'35'}],why:'Kira lima-lima: 5, 10, 15, 20, 25, 30. Enam kali.'},
+   {q:'10 × 7 = ?',big:'🔟',say:'Sepuluh darab tujuh sama dengan?',opts:[{g:'70',ok:1},{g:'17'},{g:'107'}],why:'Darab dengan 10 hanya tambah satu kosong: 7 jadi 70.'},
+   {q:'4 + 4 + 4 + 4 + 4 sama dengan…',big:'🧮',say:'Empat campur empat campur empat campur empat campur empat sama dengan?',opts:[{g:'5 × 4',ok:1},{g:'4 × 4'},{g:'5 + 4'}],why:'Ada LIMA kumpulan empat, jadi ia ditulis 5 × 4 = 20.'}
+  ]},
+/* ---------------- TAHUN 3 ---------------- */
+ {id:'mt_t3_bahagi',title:'T3: Bahagi & Baki',sub:'Kongsi sama banyak',emoji:'➗',sticker:'➗',a:[9],
+  slides:[
+   {t:'intro',emoji:'➗',title:'Bahagi',text:'Bahagi ialah mengongsi sama banyak. 12 ÷ 3 bermaksud 12 dikongsi kepada 3 kumpulan.',say:'Bahagi ialah mengongsi sama banyak. Dua belas bahagi tiga bermaksud dua belas dikongsi kepada tiga kumpulan.'},
+   {t:'soundboard',title:'Bahagi & darab berkait',hint:'Tekan untuk dengar.',items:[
+     {e:'➗',l:'12 ÷ 3 = 4',say:'Dua belas bahagi tiga sama dengan empat.'},
+     {e:'✖️',l:'4 × 3 = 12',say:'Empat darab tiga sama dengan dua belas. Ia songsangan.'},
+     {e:'➗',l:'20 ÷ 5 = 4',say:'Dua puluh bahagi lima sama dengan empat.'},
+     {e:'🍪',l:'13 ÷ 4 = 3 baki 1',say:'Tiga belas bahagi empat sama dengan tiga, baki satu.'}]},
+   {t:'practice',title:'Cuba jawab',q:'12 ÷ 3 = ?',say:'Dua belas bahagi tiga sama dengan?',opts:[{g:'4',ok:1},{g:'3'},{g:'9'}]},
+   {t:'practice',title:'Cuba jawab',q:'15 biji gula-gula dikongsi 5 orang. Setiap orang dapat…',say:'Lima belas biji gula gula dikongsi lima orang. Setiap orang dapat berapa?',opts:[{g:'3',ok:1},{g:'5'},{g:'10'}]},
+   {t:'practice',title:'Cuba jawab',q:'13 ÷ 4 = 3 baki ?',say:'Tiga belas bahagi empat sama dengan tiga, baki berapa?',opts:[{g:'1',ok:1},{g:'2'},{g:'0'}]}
+  ],
+  quiz:[
+   {q:'12 ÷ 3 = ?',big:'➗',say:'Dua belas bahagi tiga sama dengan?',opts:[{g:'4',ok:1},{g:'3'},{g:'9'}],why:'Fikir sifir: 3 × 4 = 12, jadi 12 ÷ 3 = 4.'},
+   {q:'20 ÷ 5 = ?',big:'➗',say:'Dua puluh bahagi lima sama dengan?',opts:[{g:'4',ok:1},{g:'5'},{g:'15'}],why:'5 × 4 = 20, jadi 20 ÷ 5 = 4.'},
+   {q:'18 buku disusun 3 rak sama banyak. Satu rak ada…',big:'📚',say:'Lapan belas buku disusun tiga rak sama banyak. Satu rak ada berapa?',opts:[{g:'6',ok:1},{g:'3'},{g:'15'}],why:'18 ÷ 3 = 6 kerana 3 × 6 = 18.'},
+   {q:'13 ÷ 4 memberi baki…',big:'🍪',say:'Tiga belas bahagi empat memberi baki berapa?',opts:[{g:'1',ok:1},{g:'2'},{g:'3'}],why:'4 × 3 = 12, tinggal 13 − 12 = 1. Itulah bakinya.'},
+   {q:'Jika 6 × 7 = 42, maka 42 ÷ 7 = ?',big:'🔁',say:'Jika enam darab tujuh sama dengan empat puluh dua, maka empat puluh dua bahagi tujuh sama dengan?',opts:[{g:'6',ok:1},{g:'7'},{g:'42'}],why:'Darab dan bahagi ialah operasi songsang — jawapannya kembali kepada 6.'}
+  ]},
+ {id:'mt_t3_pecahan',title:'T3: Pecahan Mudah',sub:'½ · ⅓ · ¼',emoji:'🍕',sticker:'🍕',a:[9],
+  slides:[
+   {t:'intro',emoji:'🍕',title:'Pecahan',text:'Pecahan ialah bahagian daripada satu. ½ bermaksud 1 daripada 2 bahagian sama besar.',say:'Pecahan ialah bahagian daripada satu. Satu per dua bermaksud satu daripada dua bahagian sama besar.'},
+   {t:'soundboard',title:'Kenali pecahan',hint:'Tekan untuk dengar.',items:[
+     {e:'🍕',l:'½ satu per dua',say:'Satu per dua. Separuh.'},
+     {e:'🍰',l:'⅓ satu per tiga',say:'Satu per tiga. Satu daripada tiga bahagian.'},
+     {e:'🍫',l:'¼ satu per empat',say:'Satu per empat. Suku.'},
+     {e:'🧮',l:'Pengangka & penyebut',say:'Nombor atas ialah pengangka. Nombor bawah ialah penyebut.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Piza dibahagi 4 sama besar. Satu bahagian ialah…',say:'Piza dibahagi empat sama besar. Satu bahagian ialah pecahan apa?',opts:[{g:'¼',ok:1},{g:'½'},{g:'⅓'}]},
+   {t:'practice',title:'Cuba jawab',q:'Yang manakah LEBIH BESAR?',say:'Pecahan manakah lebih besar?',opts:[{g:'½',ok:1},{g:'¼'}]},
+   {t:'practice',title:'Cuba jawab',q:'Dalam ¾, penyebutnya ialah…',say:'Dalam tiga per empat, penyebutnya ialah?',opts:[{g:'4',ok:1},{g:'3'}]}
+  ],
+  quiz:[
+   {q:'Piza dibahagi 4 sama besar. Satu bahagian ialah…',big:'🍕',say:'Piza dibahagi empat sama besar. Satu bahagian ialah pecahan apa?',opts:[{g:'¼',ok:1},{g:'½'},{g:'⅓'}],why:'Satu daripada empat bahagian ditulis 1 per 4, iaitu ¼.'},
+   {q:'Yang manakah LEBIH BESAR: ½ atau ¼?',big:'🍰',say:'Pecahan manakah lebih besar, satu per dua atau satu per empat?',opts:[{g:'½',ok:1},{g:'¼'}],why:'Makin banyak bahagian, makin kecil setiap satu. Dibahagi 2 memberi kepingan lebih besar daripada dibahagi 4.'},
+   {q:'Dalam ¾, penyebut ialah…',big:'🔢',say:'Dalam tiga per empat, penyebut ialah?',opts:[{g:'4',ok:1},{g:'3'},{g:'7'}],why:'Penyebut ialah nombor di BAWAH — ia memberitahu jumlah bahagian kesemuanya.'},
+   {q:'½ + ½ = ?',big:'🍕',say:'Satu per dua campur satu per dua sama dengan?',opts:[{g:'1',ok:1},{g:'½'},{g:'¼'}],why:'Dua separuh membentuk satu keseluruhan.'},
+   {q:'Separuh daripada 10 ialah…',big:'🔟',say:'Separuh daripada sepuluh ialah?',opts:[{g:'5',ok:1},{g:'2'},{g:'20'}],why:'Separuh bermaksud bahagi 2: 10 ÷ 2 = 5.'}
+  ]},
+/* ---------------- TAHUN 4 ---------------- */
+ {id:'mt_t4_perpuluhan',title:'T4: Perpuluhan',sub:'0.1 · 0.25 · wang',emoji:'🔸',sticker:'🔸',a:[10],
+  slides:[
+   {t:'intro',emoji:'🔸',title:'Nombor Perpuluhan',text:'Titik perpuluhan memisahkan nombor bulat daripada bahagian kecil. RM 2.50 ialah 2 ringgit 50 sen.',say:'Titik perpuluhan memisahkan nombor bulat daripada bahagian kecil. Dua ringgit lima puluh sen.'},
+   {t:'soundboard',title:'Perpuluhan & pecahan',hint:'Tekan untuk dengar.',items:[
+     {e:'🔸',l:'0.1 = 1/10',say:'Kosong perpuluhan satu sama dengan satu per sepuluh.'},
+     {e:'🔸',l:'0.5 = ½',say:'Kosong perpuluhan lima sama dengan separuh.'},
+     {e:'🔸',l:'0.25 = ¼',say:'Kosong perpuluhan dua lima sama dengan satu per empat.'},
+     {e:'💵',l:'RM 2.50',say:'Dua ringgit lima puluh sen.'}]},
+   {t:'practice',title:'Cuba jawab',q:'0.5 sama dengan pecahan…',say:'Kosong perpuluhan lima sama dengan pecahan apa?',opts:[{g:'½',ok:1},{g:'¼'},{g:'⅕'}]},
+   {t:'practice',title:'Cuba jawab',q:'Yang manakah LEBIH BESAR?',say:'Nombor manakah lebih besar?',opts:[{g:'0.7',ok:1},{g:'0.07'}]},
+   {t:'practice',title:'Cuba jawab',q:'RM 1.20 + RM 0.80 = ?',say:'Satu ringgit dua puluh sen campur lapan puluh sen sama dengan?',opts:[{g:'RM 2.00',ok:1},{g:'RM 1.28'},{g:'RM 2.80'}]}
+  ],
+  quiz:[
+   {q:'0.5 sama dengan pecahan…',big:'🔸',say:'Kosong perpuluhan lima sama dengan pecahan apa?',opts:[{g:'½',ok:1},{g:'¼'},{g:'⅕'}],why:'0.5 bermaksud 5 per 10, dan 5/10 dipermudah menjadi ½.'},
+   {q:'Yang manakah LEBIH BESAR: 0.7 atau 0.07?',big:'📈',say:'Nombor manakah lebih besar?',opts:[{g:'0.7',ok:1},{g:'0.07'}],why:'0.7 ialah 7 persepuluh; 0.07 hanya 7 perseratus — jauh lebih kecil.'},
+   {q:'RM 1.20 + RM 0.80 = ?',big:'💵',say:'Satu ringgit dua puluh sen campur lapan puluh sen?',opts:[{g:'RM 2.00',ok:1},{g:'RM 1.28'},{g:'RM 2.80'}],why:'20 sen + 80 sen = 100 sen = RM 1. Campur RM 1 asal jadi RM 2.00.'},
+   {q:'0.25 sama dengan…',big:'🔸',say:'Kosong perpuluhan dua lima sama dengan pecahan apa?',opts:[{g:'¼',ok:1},{g:'½'},{g:'¾'}],why:'25 perseratus = 25/100 = ¼ (suku).'},
+   {q:'Dalam 3.46, digit 4 berada di tempat…',big:'🔢',say:'Dalam tiga perpuluhan empat enam, digit empat berada di tempat apa?',opts:[{g:'persepuluh',ok:1},{g:'perseratus'},{g:'sa'}],why:'Digit pertama selepas titik ialah tempat persepuluh.'}
+  ]},
+ {id:'mt_t4_sudut',title:'T4: Sudut & Perimeter',sub:'Tepat, tirus, cakah',emoji:'📐',sticker:'📐',a:[10],
+  slides:[
+   {t:'intro',emoji:'📐',title:'Sudut',text:'Sudut tepat = 90°. Kurang daripada itu tirus, lebih daripada itu cakah.',say:'Sudut tepat sembilan puluh darjah. Kurang daripada itu sudut tirus. Lebih daripada itu sudut cakah.'},
+   {t:'soundboard',title:'Jenis sudut',hint:'Tekan untuk dengar.',items:[
+     {e:'📐',l:'Sudut tepat 90°',say:'Sudut tepat. Sembilan puluh darjah, seperti bucu buku.'},
+     {e:'🔺',l:'Sudut tirus < 90°',say:'Sudut tirus. Kurang daripada sembilan puluh darjah.'},
+     {e:'📏',l:'Sudut cakah > 90°',say:'Sudut cakah. Lebih daripada sembilan puluh darjah.'},
+     {e:'➖',l:'Sudut lurus 180°',say:'Sudut lurus. Seratus lapan puluh darjah, satu garis lurus.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Sudut 45° ialah sudut…',say:'Sudut empat puluh lima darjah ialah sudut apa?',opts:[{g:'tirus',ok:1},{g:'cakah'},{g:'tepat'}]},
+   {t:'intro',emoji:'🔲',title:'Perimeter',text:'Perimeter ialah jumlah panjang semua sisi. Segi empat sama sisi 5 cm: 5+5+5+5 = 20 cm.',say:'Perimeter ialah jumlah panjang semua sisi.'},
+   {t:'practice',title:'Cuba jawab',q:'Perimeter segi empat sama sisi 6 cm ialah…',say:'Perimeter segi empat sama yang sisinya enam sentimeter ialah?',opts:[{g:'24 cm',ok:1},{g:'12 cm'},{g:'36 cm'}]}
+  ],
+  quiz:[
+   {q:'Sudut 45° ialah sudut…',big:'🔺',say:'Sudut empat puluh lima darjah ialah sudut apa?',opts:[{g:'tirus',ok:1},{g:'cakah'},{g:'tepat'}],why:'45° kurang daripada 90°, jadi ia sudut tirus.'},
+   {q:'Sudut 120° ialah sudut…',big:'📏',say:'Sudut seratus dua puluh darjah ialah sudut apa?',opts:[{g:'cakah',ok:1},{g:'tirus'},{g:'tepat'}],why:'120° melebihi 90° tetapi kurang 180°, jadi ia sudut cakah.'},
+   {q:'Bucu buku membentuk sudut…',big:'📐',say:'Bucu buku membentuk sudut apa?',opts:[{g:'tepat (90°)',ok:1},{g:'tirus'},{g:'lurus'}],why:'Bucu segi empat tepat sentiasa 90°, iaitu sudut tepat.'},
+   {q:'Perimeter segi empat sama sisi 6 cm ialah…',big:'🔲',say:'Perimeter segi empat sama yang sisinya enam sentimeter?',opts:[{g:'24 cm',ok:1},{g:'12 cm'},{g:'36 cm'}],why:'Empat sisi sama: 6 + 6 + 6 + 6 = 24 cm.'},
+   {q:'Perimeter segi empat tepat 8 cm × 3 cm ialah…',big:'📏',say:'Perimeter segi empat tepat lapan sentimeter darab tiga sentimeter?',opts:[{g:'22 cm',ok:1},{g:'24 cm'},{g:'11 cm'}],why:'8 + 3 + 8 + 3 = 22 cm. Dua panjang dan dua lebar.'}
+  ]},
+/* ---------------- TAHUN 5 ---------------- */
+ {id:'mt_t5_peratus',title:'T5: Peratus & Purata',sub:'% dan min',emoji:'💯',sticker:'📊',a:[11],
+  slides:[
+   {t:'intro',emoji:'💯',title:'Peratus',text:'Peratus bermaksud "daripada seratus". 50% ialah separuh, 25% ialah suku.',say:'Peratus bermaksud daripada seratus. Lima puluh peratus ialah separuh.'},
+   {t:'soundboard',title:'Peratus penting',hint:'Tekan untuk dengar.',items:[
+     {e:'💯',l:'100% = semua',say:'Seratus peratus bermaksud kesemuanya.'},
+     {e:'🌗',l:'50% = ½',say:'Lima puluh peratus ialah separuh.'},
+     {e:'🍰',l:'25% = ¼',say:'Dua puluh lima peratus ialah suku.'},
+     {e:'🔟',l:'10% = bahagi 10',say:'Sepuluh peratus ialah nombor itu dibahagi sepuluh.'}]},
+   {t:'practice',title:'Cuba jawab',q:'50% daripada 80 ialah…',say:'Lima puluh peratus daripada lapan puluh ialah?',opts:[{g:'40',ok:1},{g:'30'},{g:'8'}]},
+   {t:'intro',emoji:'📊',title:'Purata (Min)',text:'Purata = jumlah semua ÷ bilangan item.',say:'Purata sama dengan jumlah semua dibahagi bilangan item.'},
+   {t:'practice',title:'Cuba jawab',q:'Purata bagi 4, 6 dan 8 ialah…',say:'Purata bagi empat, enam dan lapan ialah?',opts:[{g:'6',ok:1},{g:'18'},{g:'9'}]}
+  ],
+  quiz:[
+   {q:'50% daripada 80 ialah…',big:'🌗',say:'Lima puluh peratus daripada lapan puluh ialah?',opts:[{g:'40',ok:1},{g:'30'},{g:'8'}],why:'50% ialah separuh, jadi 80 ÷ 2 = 40.'},
+   {q:'10% daripada 200 ialah…',big:'🔟',say:'Sepuluh peratus daripada dua ratus ialah?',opts:[{g:'20',ok:1},{g:'2'},{g:'100'}],why:'10% bermaksud bahagi 10: 200 ÷ 10 = 20.'},
+   {q:'25% sama dengan pecahan…',big:'🍰',say:'Dua puluh lima peratus sama dengan pecahan apa?',opts:[{g:'¼',ok:1},{g:'½'},{g:'⅓'}],why:'25 daripada 100 = 25/100 = ¼.'},
+   {q:'Purata bagi 4, 6 dan 8 ialah…',big:'📊',say:'Purata bagi empat, enam dan lapan ialah?',opts:[{g:'6',ok:1},{g:'18'},{g:'9'}],why:'Jumlah = 4+6+8 = 18. Bilangan item = 3. Purata = 18 ÷ 3 = 6.'},
+   {q:'Skor: 70, 80, 90. Purata ialah…',big:'📝',say:'Skor tujuh puluh, lapan puluh, sembilan puluh. Purata ialah?',opts:[{g:'80',ok:1},{g:'75'},{g:'240'}],why:'Jumlah 240 dibahagi 3 markah = 80.'}
+  ]},
+ {id:'mt_t5_isipadu',title:'T5: Isi Padu & Luas',sub:'cm³ dan cm²',emoji:'🧊',sticker:'🧊',a:[11],
+  slides:[
+   {t:'intro',emoji:'🧊',title:'Luas & Isi Padu',text:'Luas = panjang × lebar (cm²). Isi padu = panjang × lebar × tinggi (cm³).',say:'Luas sama dengan panjang darab lebar. Isi padu sama dengan panjang darab lebar darab tinggi.'},
+   {t:'soundboard',title:'Formula penting',hint:'Tekan untuk dengar.',items:[
+     {e:'🟦',l:'Luas = p × l',say:'Luas segi empat tepat sama dengan panjang darab lebar. Unitnya sentimeter persegi.'},
+     {e:'🧊',l:'Isi padu = p × l × t',say:'Isi padu kuboid sama dengan panjang darab lebar darab tinggi. Unitnya sentimeter padu.'},
+     {e:'📏',l:'Unit luas: cm²',say:'Luas menggunakan unit sentimeter persegi.'},
+     {e:'🧱',l:'Unit isi padu: cm³',say:'Isi padu menggunakan unit sentimeter padu.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Luas 5 cm × 4 cm ialah…',say:'Luas lima sentimeter darab empat sentimeter ialah?',opts:[{g:'20 cm²',ok:1},{g:'9 cm²'},{g:'20 cm'}]},
+   {t:'practice',title:'Cuba jawab',q:'Isi padu kubus sisi 3 cm ialah…',say:'Isi padu kubus yang sisinya tiga sentimeter ialah?',opts:[{g:'27 cm³',ok:1},{g:'9 cm³'},{g:'12 cm³'}]},
+   {t:'practice',title:'Cuba jawab',q:'1 liter sama dengan…',say:'Satu liter sama dengan berapa mililiter?',opts:[{g:'1000 ml',ok:1},{g:'100 ml'},{g:'10 ml'}]}
+  ],
+  quiz:[
+   {q:'Luas 5 cm × 4 cm ialah…',big:'🟦',say:'Luas lima sentimeter darab empat sentimeter ialah?',opts:[{g:'20 cm²',ok:1},{g:'9 cm²'},{g:'20 cm'}],why:'Luas = panjang × lebar = 5 × 4 = 20, dan unitnya cm² kerana dua dimensi.'},
+   {q:'Isi padu kubus sisi 3 cm ialah…',big:'🧊',say:'Isi padu kubus yang sisinya tiga sentimeter?',opts:[{g:'27 cm³',ok:1},{g:'9 cm³'},{g:'12 cm³'}],why:'3 × 3 × 3 = 27 cm³. Kubus mempunyai semua sisi sama.'},
+   {q:'Unit bagi LUAS ialah…',big:'📏',say:'Unit bagi luas ialah?',opts:[{g:'cm²',ok:1},{g:'cm³'},{g:'cm'}],why:'Luas ialah dua dimensi (panjang × lebar), jadi unitnya berkuasa dua.'},
+   {q:'1 liter sama dengan…',big:'🥛',say:'Satu liter sama dengan berapa mililiter?',opts:[{g:'1000 ml',ok:1},{g:'100 ml'},{g:'10 ml'}],why:'Awalan "mili" bermaksud satu perseribu, jadi 1 liter = 1000 ml.'},
+   {q:'Isi padu kuboid 4 × 3 × 2 cm ialah…',big:'🧱',say:'Isi padu kuboid empat darab tiga darab dua sentimeter?',opts:[{g:'24 cm³',ok:1},{g:'9 cm³'},{g:'12 cm³'}],why:'4 × 3 = 12, kemudian 12 × 2 = 24 cm³.'}
+  ]},
+/* ---------------- TAHUN 6 ---------------- */
+ {id:'mt_t6_nisbah',title:'T6: Nisbah & Kadaran',sub:'2:3 dan nilai per unit',emoji:'⚖️',sticker:'⚖️',a:[12],
+  slides:[
+   {t:'intro',emoji:'⚖️',title:'Nisbah',text:'Nisbah membandingkan dua kuantiti. 2 : 3 bermaksud bagi setiap 2 bahagian A, ada 3 bahagian B.',say:'Nisbah membandingkan dua kuantiti. Dua nisbah tiga bermaksud bagi setiap dua bahagian A, ada tiga bahagian B.'},
+   {t:'soundboard',title:'Cara guna nisbah',hint:'Tekan untuk dengar.',items:[
+     {e:'⚖️',l:'2 : 3',say:'Dua nisbah tiga. Jumlah bahagian ialah lima.'},
+     {e:'➗',l:'Cari satu bahagian',say:'Bahagikan jumlah dengan bilangan bahagian untuk cari nilai satu bahagian.'},
+     {e:'🟰',l:'Nisbah setara',say:'2 nisbah 3 sama dengan 4 nisbah 6.'},
+     {e:'🛒',l:'Kadar per unit',say:'Jika 3 buku berharga RM 12, satu buku berharga RM 4.'}]},
+   {t:'practice',title:'Cuba jawab',q:'RM 50 dibahagi nisbah 2:3. Bahagian kecil ialah…',say:'Lima puluh ringgit dibahagi nisbah dua nisbah tiga. Bahagian yang kecil ialah?',opts:[{g:'RM 20',ok:1},{g:'RM 30'},{g:'RM 25'}]},
+   {t:'practice',title:'Cuba jawab',q:'3 buku = RM 12. Maka 5 buku = ?',say:'Tiga buku berharga dua belas ringgit. Berapa harga lima buku?',opts:[{g:'RM 20',ok:1},{g:'RM 15'},{g:'RM 60'}]},
+   {t:'practice',title:'Cuba jawab',q:'Nisbah setara bagi 2:3 ialah…',say:'Nisbah setara bagi dua nisbah tiga ialah?',opts:[{g:'4:6',ok:1},{g:'3:2'},{g:'2:6'}]}
+  ],
+  quiz:[
+   {q:'RM 50 dibahagi nisbah 2:3. Bahagian KECIL ialah…',big:'⚖️',say:'Lima puluh ringgit dibahagi nisbah dua nisbah tiga. Bahagian kecil ialah?',opts:[{g:'RM 20',ok:1},{g:'RM 30'},{g:'RM 25'}],why:'Jumlah bahagian = 2 + 3 = 5. Satu bahagian = 50 ÷ 5 = RM 10. Bahagian kecil = 2 × 10 = RM 20.'},
+   {q:'3 buku = RM 12. Maka 5 buku = ?',big:'🛒',say:'Tiga buku berharga dua belas ringgit. Berapa harga lima buku?',opts:[{g:'RM 20',ok:1},{g:'RM 15'},{g:'RM 60'}],why:'Satu buku = 12 ÷ 3 = RM 4. Lima buku = 5 × 4 = RM 20.'},
+   {q:'Nisbah setara bagi 2:3 ialah…',big:'🟰',say:'Nisbah setara bagi dua nisbah tiga ialah?',opts:[{g:'4:6',ok:1},{g:'3:2'},{g:'2:6'}],why:'Darab kedua-dua bahagian dengan nombor sama: 2×2 = 4 dan 3×2 = 6.'},
+   {q:'Nisbah 4 lelaki : 6 perempuan dipermudah menjadi…',big:'👥',say:'Nisbah empat lelaki nisbah enam perempuan dipermudah menjadi?',opts:[{g:'2:3',ok:1},{g:'1:2'},{g:'4:6'}],why:'Bahagi kedua-duanya dengan 2: 4÷2 = 2 dan 6÷2 = 3.'},
+   {q:'2 kg beras = RM 9. Harga 1 kg ialah…',big:'🍚',say:'Dua kilogram beras berharga sembilan ringgit. Berapa harga satu kilogram?',opts:[{g:'RM 4.50',ok:1},{g:'RM 18'},{g:'RM 9'}],why:'Bahagi harga dengan kuantiti: 9 ÷ 2 = RM 4.50.'}
+  ]},
+ {id:'mt_t6_algebra',title:'T6: Algebra Asas',sub:'Cari nilai yang hilang',emoji:'🔤',sticker:'🧮',a:[12],
+  slides:[
+   {t:'intro',emoji:'🔤',title:'Huruf Mewakili Nombor',text:'Dalam algebra, huruf mewakili nombor yang belum diketahui. 3 + n = 10, jadi n = 7.',say:'Dalam algebra, huruf mewakili nombor yang belum diketahui. Tiga campur n sama dengan sepuluh, jadi n sama dengan tujuh.'},
+   {t:'soundboard',title:'Cara menyelesaikan',hint:'Tekan untuk dengar.',items:[
+     {e:'➕',l:'x + 5 = 12',say:'Tolak lima dari dua belas. x sama dengan tujuh.'},
+     {e:'➖',l:'x − 4 = 10',say:'Campur empat pada sepuluh. x sama dengan empat belas.'},
+     {e:'✖️',l:'3y = 15',say:'Tiga y bermaksud tiga darab y. Bahagi lima belas dengan tiga. y sama dengan lima.'},
+     {e:'⚖️',l:'Imbangkan',say:'Apa yang dibuat pada satu sisi, buat juga pada sisi yang satu lagi.'}]},
+   {t:'practice',title:'Cuba jawab',q:'x + 5 = 12. Maka x = ?',say:'x campur lima sama dengan dua belas. Berapakah x?',opts:[{g:'7',ok:1},{g:'17'},{g:'5'}]},
+   {t:'practice',title:'Cuba jawab',q:'3y = 15. Maka y = ?',say:'Tiga y sama dengan lima belas. Berapakah y?',opts:[{g:'5',ok:1},{g:'12'},{g:'45'}]},
+   {t:'practice',title:'Cuba jawab',q:'Jika n = 4, maka 2n + 1 = ?',say:'Jika n sama dengan empat, berapakah dua n campur satu?',opts:[{g:'9',ok:1},{g:'8'},{g:'7'}]}
+  ],
+  quiz:[
+   {q:'x + 5 = 12. Maka x = ?',big:'🔤',say:'x campur lima sama dengan dua belas. Berapakah x?',opts:[{g:'7',ok:1},{g:'17'},{g:'5'}],why:'Buat operasi songsang: 12 − 5 = 7.'},
+   {q:'x − 4 = 10. Maka x = ?',big:'➖',say:'x tolak empat sama dengan sepuluh. Berapakah x?',opts:[{g:'14',ok:1},{g:'6'},{g:'40'}],why:'Songsangan tolak ialah campur: 10 + 4 = 14.'},
+   {q:'3y = 15. Maka y = ?',big:'✖️',say:'Tiga y sama dengan lima belas. Berapakah y?',opts:[{g:'5',ok:1},{g:'12'},{g:'45'}],why:'3y bermaksud 3 × y. Bahagi kedua-dua sisi dengan 3: 15 ÷ 3 = 5.'},
+   {q:'Jika n = 4, maka 2n + 1 = ?',big:'🧮',say:'Jika n sama dengan empat, berapakah dua n campur satu?',opts:[{g:'9',ok:1},{g:'8'},{g:'7'}],why:'2n bermaksud 2 × 4 = 8. Kemudian tambah 1 = 9.'},
+   {q:'Umur Ali ialah a. Lima tahun lagi umurnya…',big:'🎂',say:'Umur Ali ialah a. Lima tahun lagi umurnya ialah?',opts:[{g:'a + 5',ok:1},{g:'5a'},{g:'a − 5'}],why:'Bertambah umur bermaksud campur, jadi a + 5.'}
+  ]}
+]);
+</script>
+<script>
+/* =====================================================================
+   BAHASA MELAYU — Tahun 2 hingga Tahun 6
+   ===================================================================== */
+chapAdd('bm',null,[
+ {id:'bm_t2_imbuhan',title:'T2: Imbuhan meN- & Kata Ganda',sub:'menulis · rama-rama',emoji:'🧩',sticker:'🧩',a:[8],
+  slides:[
+   {t:'intro',emoji:'🧩',title:'Imbuhan meN-',text:'Imbuhan meN- berubah ikut huruf pertama kata dasar: me-, mem-, men-, meng-.',say:'Imbuhan meN berubah ikut huruf pertama kata dasar. Me, mem, men, meng.'},
+   {t:'soundboard',title:'Bentuk imbuhan meN-',hint:'Tekan untuk dengar.',items:[
+     {e:'✍️',l:'tulis → menulis',say:'Tulis menjadi menulis.'},
+     {e:'📖',l:'baca → membaca',say:'Baca menjadi membaca.'},
+     {e:'🎨',l:'cat → mengecat',say:'Cat menjadi mengecat.'},
+     {e:'🏃',l:'kejar → mengejar',say:'Kejar menjadi mengejar.'}]},
+   {t:'soundboard',title:'Kata ganda',hint:'Tekan untuk dengar.',items:[
+     {e:'🦋',l:'rama-rama',say:'Rama rama. Kata ganda penuh.'},
+     {e:'👦',l:'kanak-kanak',say:'Kanak kanak. Kata ganda penuh.'},
+     {e:'🏃',l:'berlari-lari',say:'Berlari lari. Menunjukkan perbuatan berulang.'},
+     {e:'🍎',l:'buah-buahan',say:'Buah buahan. Menunjukkan banyak jenis.'}]},
+   {t:'practice',title:'Cuba jawab',q:'"baca" + meN- = ?',say:'Baca campur imbuhan meN jadi apa?',opts:[{g:'membaca',ok:1},{g:'mebaca'},{g:'mengbaca'}]},
+   {t:'sentence',title:'Susun ayat',hint:'Tekan perkataan ikut susunan betul.',emoji:'📖',words:['Adik','sedang','membaca','buku','cerita'],say:'Adik sedang membaca buku cerita'}
+  ],
+  quiz:[
+   {q:'"baca" + meN- = ?',big:'📖',say:'Baca campur imbuhan meN jadi apa?',opts:[{g:'membaca',ok:1},{g:'mebaca'},{g:'mengbaca'}],why:'Kata dasar bermula dengan "b" mengambil bentuk mem-: membaca.'},
+   {q:'"tulis" + meN- = ?',big:'✍️',say:'Tulis campur imbuhan meN jadi apa?',opts:[{g:'menulis',ok:1},{g:'mentulis'},{g:'memulis'}],why:'Huruf "t" digugurkan dan diganti "n": menulis.'},
+   {q:'Yang manakah KATA GANDA?',big:'🦋',say:'Yang manakah kata ganda?',opts:[{g:'rama-rama',ok:1},{g:'rumah'},{g:'berlari'}],why:'Kata ganda mengulang perkataan, dipisahkan tanda sempang.'},
+   {q:'"buah-buahan" menunjukkan…',big:'🍎',say:'Buah buahan menunjukkan apa?',opts:[{g:'banyak jenis',ok:1},{g:'satu buah'},{g:'buah kecil'}],why:'Kata ganda berimbuhan seperti ini membawa maksud pelbagai jenis.'},
+   {q:'Ayat betul: Ibu ___ nasi.',big:'🍚',say:'Ayat betul. Ibu apa nasi?',opts:[{g:'memasak',ok:1},{g:'mengmasak'},{g:'memmasak'}],why:'Kata dasar "masak" bermula dengan "m", jadi bentuknya memasak.'}
+  ]},
+ {id:'bm_t3_peribahasa',title:'T3: Peribahasa & Jenis Ayat',sub:'Penyata · tanya · seru',emoji:'💬',sticker:'💬',a:[9],
+  slides:[
+   {t:'intro',emoji:'💬',title:'Jenis Ayat',text:'Ayat penyata memberi maklumat. Ayat tanya bertanya. Ayat seru menunjukkan perasaan. Ayat perintah menyuruh.',say:'Ayat penyata memberi maklumat. Ayat tanya bertanya. Ayat seru menunjukkan perasaan. Ayat perintah menyuruh.'},
+   {t:'soundboard',title:'Empat jenis ayat',hint:'Tekan untuk dengar contoh.',items:[
+     {e:'📄',l:'Penyata',say:'Ayat penyata. Ali pergi ke sekolah.'},
+     {e:'❓',l:'Tanya',say:'Ayat tanya. Ke mana Ali pergi?'},
+     {e:'❗',l:'Seru',say:'Ayat seru. Cantiknya bunga itu!'},
+     {e:'🫵',l:'Perintah',say:'Ayat perintah. Tutup pintu itu.'}]},
+   {t:'soundboard',title:'Peribahasa biasa',hint:'Tekan untuk dengar maksudnya.',items:[
+     {e:'🌧️',l:'Bagai aur dengan tebing',say:'Bagai aur dengan tebing. Bermaksud saling membantu.'},
+     {e:'🐜',l:'Sedikit-sedikit lama-lama jadi bukit',say:'Sedikit sedikit, lama lama jadi bukit. Berjimat sedikit akan menjadi banyak.'},
+     {e:'🌊',l:'Air dicincang tidak akan putus',say:'Air dicincang tidak akan putus. Adik beradik tidak akan berpisah selamanya.'},
+     {e:'🥥',l:'Bagai kacang lupakan kulit',say:'Bagai kacang lupakan kulit. Lupa asal usul.'}]},
+   {t:'practice',title:'Cuba jawab',q:'"Ke mana kamu pergi?" ialah ayat…',say:'Ke mana kamu pergi ialah ayat jenis apa?',opts:[{g:'tanya',ok:1},{g:'penyata'},{g:'seru'}]},
+   {t:'practice',title:'Cuba jawab',q:'"Bagai aur dengan tebing" bermaksud…',say:'Bagai aur dengan tebing bermaksud apa?',opts:[{g:'saling membantu',ok:1},{g:'suka bergaduh'}]}
+  ],
+  quiz:[
+   {q:'"Ke mana kamu pergi?" ialah ayat…',big:'❓',say:'Ke mana kamu pergi ialah ayat jenis apa?',opts:[{g:'tanya',ok:1},{g:'penyata'},{g:'seru'}],why:'Ia bertanya sesuatu dan diakhiri tanda soal.'},
+   {q:'"Cantiknya pemandangan itu!" ialah ayat…',big:'❗',say:'Cantiknya pemandangan itu ialah ayat jenis apa?',opts:[{g:'seru',ok:1},{g:'tanya'},{g:'perintah'}],why:'Ia meluahkan perasaan kagum dan diakhiri tanda seru.'},
+   {q:'"Bagai aur dengan tebing" bermaksud…',big:'🌧️',say:'Bagai aur dengan tebing bermaksud apa?',opts:[{g:'saling membantu',ok:1},{g:'suka bergaduh'},{g:'sangat kaya'}],why:'Aur dan tebing saling menyokong, jadi ia bermaksud hubungan tolong-menolong.'},
+   {q:'"Sedikit-sedikit lama-lama jadi bukit" mengajar kita…',big:'🐜',say:'Peribahasa ini mengajar kita apa?',opts:[{g:'berjimat',ok:1},{g:'membazir'},{g:'bermalas'}],why:'Sesuatu yang kecil jika dikumpul secara berterusan akan menjadi banyak.'},
+   {q:'"Tutup pintu itu." ialah ayat…',big:'🚪',say:'Tutup pintu itu ialah ayat jenis apa?',opts:[{g:'perintah',ok:1},{g:'tanya'},{g:'seru'}],why:'Ia menyuruh seseorang melakukan sesuatu.'}
+  ]},
+ {id:'bm_t4_hubung',title:'T4: Kata Hubung & Penjodoh Bilangan',sub:'dan, tetapi, kerana · seekor, sebatang',emoji:'🔗',sticker:'🔗',a:[10],
+  slides:[
+   {t:'intro',emoji:'🔗',title:'Kata Hubung',text:'Kata hubung menyambung dua idea: dan, atau, tetapi, kerana, supaya.',say:'Kata hubung menyambung dua idea. Dan, atau, tetapi, kerana, supaya.'},
+   {t:'soundboard',title:'Kata hubung',hint:'Tekan untuk dengar contoh.',items:[
+     {e:'➕',l:'dan — menambah',say:'Saya suka nasi dan ayam.'},
+     {e:'↔️',l:'tetapi — berlawanan',say:'Dia pandai tetapi malas.'},
+     {e:'❓',l:'kerana — sebab',say:'Dia lewat kerana hujan lebat.'},
+     {e:'🎯',l:'supaya — tujuan',say:'Belajar rajin supaya berjaya.'}]},
+   {t:'soundboard',title:'Penjodoh bilangan',hint:'Tekan untuk dengar.',items:[
+     {e:'🐱',l:'seekor kucing',say:'Seekor. Untuk haiwan.'},
+     {e:'🌳',l:'sebatang pokok',say:'Sebatang. Untuk benda panjang seperti pokok dan pensel.'},
+     {e:'📄',l:'sekeping kertas',say:'Sekeping. Untuk benda nipis dan leper.'},
+     {e:'🏠',l:'sebuah rumah',say:'Sebuah. Untuk rumah, kereta dan buku.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Dia pandai ___ malas.',say:'Dia pandai apa malas?',opts:[{g:'tetapi',ok:1},{g:'dan'},{g:'supaya'}]},
+   {t:'practice',title:'Cuba jawab',q:'___ kucing sedang tidur.',say:'Penjodoh bilangan manakah untuk kucing?',opts:[{g:'Seekor',ok:1},{g:'Sebatang'},{g:'Sekeping'}]}
+  ],
+  quiz:[
+   {q:'Dia pandai ___ malas.',big:'↔️',say:'Dia pandai apa malas?',opts:[{g:'tetapi',ok:1},{g:'dan'},{g:'supaya'}],why:'Pandai dan malas ialah idea berlawanan, jadi guna "tetapi".'},
+   {q:'Dia tidak hadir ___ demam.',big:'🤒',say:'Dia tidak hadir apa demam?',opts:[{g:'kerana',ok:1},{g:'tetapi'},{g:'atau'}],why:'Demam ialah SEBAB dia tidak hadir, jadi guna "kerana".'},
+   {q:'___ kucing sedang tidur.',big:'🐱',say:'Penjodoh bilangan manakah untuk kucing?',opts:[{g:'Seekor',ok:1},{g:'Sebatang'},{g:'Sekeping'}],why:'"Seekor" digunakan khusus untuk haiwan.'},
+   {q:'Ayah menanam ___ pokok rambutan.',big:'🌳',say:'Penjodoh bilangan manakah untuk pokok?',opts:[{g:'sebatang',ok:1},{g:'sebuah'},{g:'seorang'}],why:'"Sebatang" untuk benda panjang dan tegak seperti pokok atau pensel.'},
+   {q:'Belajar rajin ___ lulus dengan baik.',big:'🎯',say:'Belajar rajin apa lulus dengan baik?',opts:[{g:'supaya',ok:1},{g:'tetapi'},{g:'kerana'}],why:'Lulus ialah TUJUAN belajar rajin, jadi guna "supaya".'}
+  ]},
+ {id:'bm_t5_simpulan',title:'T5: Simpulan Bahasa & Karangan',sub:'Buah tangan · ringan tulang',emoji:'✒️',sticker:'✒️',a:[11],
+  slides:[
+   {t:'intro',emoji:'✒️',title:'Simpulan Bahasa',text:'Simpulan bahasa ialah dua patah perkataan yang membawa maksud lain daripada makna asalnya.',say:'Simpulan bahasa ialah dua patah perkataan yang membawa maksud lain daripada makna asalnya.'},
+   {t:'soundboard',title:'Simpulan bahasa biasa',hint:'Tekan untuk dengar maksudnya.',items:[
+     {e:'🎁',l:'buah tangan',say:'Buah tangan bermaksud hadiah yang dibawa pulang.'},
+     {e:'💪',l:'ringan tulang',say:'Ringan tulang bermaksud rajin bekerja.'},
+     {e:'👂',l:'panjang tangan',say:'Panjang tangan bermaksud suka mencuri.'},
+     {e:'❤️',l:'murah hati',say:'Murah hati bermaksud suka memberi dan membantu.'}]},
+   {t:'intro',emoji:'📝',title:'Karangan Ringkas',text:'Karangan ada tiga bahagian: pendahuluan, isi, dan penutup.',say:'Karangan ada tiga bahagian. Pendahuluan, isi, dan penutup.'},
+   {t:'sequence',title:'Susun bahagian karangan',hint:'Tekan ikut urutan yang betul.',steps:[
+     {e:'1️⃣',l:'Pendahuluan'},{e:'2️⃣',l:'Isi pertama'},{e:'3️⃣',l:'Isi kedua'},{e:'4️⃣',l:'Penutup'}],say:'Susun bahagian karangan mengikut urutan.'},
+   {t:'practice',title:'Cuba jawab',q:'"Ringan tulang" bermaksud…',say:'Ringan tulang bermaksud apa?',opts:[{g:'rajin bekerja',ok:1},{g:'badan kurus'},{g:'suka tidur'}]}
+  ],
+  quiz:[
+   {q:'"Ringan tulang" bermaksud…',big:'💪',say:'Ringan tulang bermaksud apa?',opts:[{g:'rajin bekerja',ok:1},{g:'badan kurus'},{g:'suka tidur'}],why:'Simpulan bahasa ini memuji orang yang cepat dan rajin membuat kerja.'},
+   {q:'"Buah tangan" bermaksud…',big:'🎁',say:'Buah tangan bermaksud apa?',opts:[{g:'hadiah dibawa pulang',ok:1},{g:'buah di tangan'},{g:'tangan cedera'}],why:'Maksudnya bukan literal — ia merujuk hadiah atau ole-ole daripada perjalanan.'},
+   {q:'"Murah hati" bermaksud…',big:'❤️',say:'Murah hati bermaksud apa?',opts:[{g:'suka memberi',ok:1},{g:'harga murah'},{g:'hati sakit'}],why:'Ia menggambarkan sikap pemurah dan suka membantu orang lain.'},
+   {q:'Bahagian PERTAMA karangan ialah…',big:'📝',say:'Bahagian pertama karangan ialah?',opts:[{g:'pendahuluan',ok:1},{g:'penutup'},{g:'isi'}],why:'Pendahuluan memperkenalkan tajuk sebelum isi dibincangkan.'},
+   {q:'"Panjang tangan" bermaksud…',big:'✋',say:'Panjang tangan bermaksud apa?',opts:[{g:'suka mencuri',ok:1},{g:'tangan besar'},{g:'suka menolong'}],why:'Ia merujuk sikap buruk iaitu mengambil barang orang lain.'}
+  ]},
+ {id:'bm_t6_rumusan',title:'T6: Pemahaman & Rumusan',sub:'Cari isi penting',emoji:'🔍',sticker:'📘',a:[12],
+  slides:[
+   {t:'intro',emoji:'🔍',title:'Membaca untuk Faham',text:'Baca petikan, cari isi penting, kemudian tulis semula dengan ayat sendiri.',say:'Baca petikan, cari isi penting, kemudian tulis semula dengan ayat sendiri.'},
+   {t:'story',title:'Petikan: Kitar Semula di Sekolah',emoji:'♻️',lines:[
+     {t:'SK Taman Damai memulakan program kitar semula pada tahun lalu.',e:'🏫',say:'S K Taman Damai memulakan program kitar semula pada tahun lalu.'},
+     {t:'Setiap kelas diberi tiga tong: biru, oren dan coklat.',e:'🗑️',say:'Setiap kelas diberi tiga tong. Biru, oren dan coklat.'},
+     {t:'Murid mengumpul kertas dan botol setiap hari Jumaat.',e:'📰',say:'Murid mengumpul kertas dan botol setiap hari Jumaat.'},
+     {t:'Hasil jualan digunakan untuk membeli buku perpustakaan.',e:'📚',say:'Hasil jualan digunakan untuk membeli buku perpustakaan.'}],
+    moral:'Isi penting: program kitar semula menjana dana untuk perpustakaan sekolah.',say:'Baca petikan baris demi baris.'},
+   {t:'practice',title:'Soalan 1',q:'Berapa tong disediakan setiap kelas?',say:'Berapa tong disediakan bagi setiap kelas?',opts:[{g:'3',ok:1},{g:'2'},{g:'4'}]},
+   {t:'practice',title:'Soalan 2',q:'Hasil jualan digunakan untuk…',say:'Hasil jualan digunakan untuk apa?',opts:[{g:'membeli buku perpustakaan',ok:1},{g:'membeli komputer'},{g:'melancong'}]},
+   {t:'practice',title:'Soalan 3',q:'Bila murid mengumpul bahan kitar semula?',say:'Bila murid mengumpul bahan kitar semula?',opts:[{g:'Setiap hari Jumaat',ok:1},{g:'Setiap hari Isnin'},{g:'Sebulan sekali'}]}
+  ],
+  quiz:[
+   {q:'Berapa tong disediakan setiap kelas?',big:'🗑️',say:'Berapa tong disediakan bagi setiap kelas?',opts:[{g:'3',ok:1},{g:'2'},{g:'4'}],why:'Petikan menyatakan tiga tong: biru, oren dan coklat.'},
+   {q:'Hasil jualan digunakan untuk…',big:'📚',say:'Hasil jualan digunakan untuk apa?',opts:[{g:'membeli buku perpustakaan',ok:1},{g:'membeli komputer'},{g:'melancong'}],why:'Ayat terakhir petikan menyatakan hasil jualan membeli buku perpustakaan.'},
+   {q:'Bila bahan dikumpul?',big:'📅',say:'Bila murid mengumpul bahan kitar semula?',opts:[{g:'Setiap hari Jumaat',ok:1},{g:'Setiap hari Isnin'},{g:'Sebulan sekali'}],why:'Petikan menyebut murid mengumpul kertas dan botol setiap hari Jumaat.'},
+   {q:'Tajuk paling sesuai bagi petikan ini ialah…',big:'🔍',say:'Tajuk paling sesuai bagi petikan ini ialah?',opts:[{g:'Kitar Semula di Sekolah',ok:1},{g:'Sukan Tahunan'},{g:'Cuti Sekolah'}],why:'Keseluruhan petikan menceritakan program kitar semula, bukan topik lain.'},
+   {q:'Membuat rumusan bermaksud…',big:'✍️',say:'Membuat rumusan bermaksud apa?',opts:[{g:'tulis isi penting dengan ayat sendiri',ok:1},{g:'salin semula petikan'}],why:'Rumusan memerlukan kita memilih isi penting dan menulisnya semula, bukan menyalin.'}
+  ]}
+]);
+
+/* =====================================================================
+   ENGLISH — Year 2 to Year 6
+   ===================================================================== */
+chapAdd('en',null,[
+ {id:'en_t2_present',title:'Y2: Present Continuous',sub:'is / are + -ing',emoji:'🏃',sticker:'🏃',a:[8],
+  slides:[
+   {t:'intro',emoji:'🏃',title:'Happening Now',text:'Use is/are + verb-ing for something happening right now: She is reading.',say:'Use is or are plus verb ing for something happening right now. She is reading.',lang:'en-US'},
+   {t:'soundboard',title:'is / are + -ing',hint:'Tap to hear each one.',lang:'en-US',items:[
+     {e:'📖',l:'She is reading.',say:'She is reading a book right now.'},
+     {e:'⚽',l:'They are playing.',say:'They are playing football.'},
+     {e:'🍚',l:'I am eating.',say:'I am eating my lunch.'},
+     {e:'🐦',l:'The bird is singing.',say:'The bird is singing in the tree.'}]},
+   {t:'practice',title:'Your turn',q:'She ___ reading a book.',say:'She what reading a book?',lang:'en-US',opts:[{g:'is',ok:1},{g:'are'},{g:'am'}]},
+   {t:'practice',title:'Your turn',q:'They ___ playing outside.',say:'They what playing outside?',lang:'en-US',opts:[{g:'are',ok:1},{g:'is'},{g:'am'}]},
+   {t:'sentence',title:'Build the sentence',hint:'Tap the words in the right order.',emoji:'🐦',
+    words:['The','bird','is','singing','now'],say:'The bird is singing now',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'She ___ reading a book.',big:'📖',say:'She what reading a book?',lang:'en-US',opts:[{g:'is',ok:1},{g:'are'},{g:'am'}],why:'"She" is one person, so it takes "is".'},
+   {q:'They ___ playing outside.',big:'⚽',say:'They what playing outside?',lang:'en-US',opts:[{g:'are',ok:1},{g:'is'},{g:'am'}],why:'"They" is more than one, so it takes "are".'},
+   {q:'I ___ eating my lunch.',big:'🍚',say:'I what eating my lunch?',lang:'en-US',opts:[{g:'am',ok:1},{g:'is'},{g:'are'}],why:'"I" always takes "am" in the present continuous.'},
+   {q:'Which sentence is correct?',big:'✅',say:'Which sentence is correct?',lang:'en-US',opts:[{g:'He is running fast.',ok:1},{g:'He are running fast.'}],why:'"He" is singular, so it must pair with "is".'},
+   {q:'Add -ing to "swim":',big:'🏊',say:'Add ing to swim.',lang:'en-US',opts:[{g:'swimming',ok:1},{g:'swiming'},{g:'swimeing'}],why:'Short verbs ending in one vowel + one consonant double the last letter: swim → swimming.'}
+  ]},
+ {id:'en_t3_past',title:'Y3: Past Tense & Conjunctions',sub:'went, saw · and, but, because',emoji:'⏪',sticker:'⏪',a:[9],
+  slides:[
+   {t:'intro',emoji:'⏪',title:'Talking About the Past',text:'Many verbs add -ed, but common ones change completely: go → went, see → saw.',say:'Many verbs add ed, but common ones change completely. Go becomes went. See becomes saw.',lang:'en-US'},
+   {t:'soundboard',title:'Irregular past tense',hint:'Tap to hear both forms.',lang:'en-US',items:[
+     {e:'🚶',l:'go → went',say:'Today I go. Yesterday I went.'},
+     {e:'👀',l:'see → saw',say:'Today I see. Yesterday I saw.'},
+     {e:'✍️',l:'write → wrote',say:'Today I write. Yesterday I wrote.'},
+     {e:'🥤',l:'drink → drank',say:'Today I drink. Yesterday I drank.'}]},
+   {t:'soundboard',title:'Joining words',hint:'Tap to hear each one.',lang:'en-US',items:[
+     {e:'➕',l:'and — adds',say:'I like rice and chicken.'},
+     {e:'↔️',l:'but — opposite',say:'It was raining but we went out.'},
+     {e:'❓',l:'because — reason',say:'I was late because the bus was slow.'},
+     {e:'🔀',l:'or — choice',say:'Do you want tea or coffee?'}]},
+   {t:'practice',title:'Your turn',q:'Yesterday I ___ to the market. (go)',say:'Yesterday I what to the market?',lang:'en-US',opts:[{g:'went',ok:1},{g:'goed'},{g:'go'}]},
+   {t:'practice',title:'Your turn',q:'I was late ___ the bus was slow.',say:'I was late what the bus was slow?',lang:'en-US',opts:[{g:'because',ok:1},{g:'but'},{g:'or'}]}
+  ],
+  quiz:[
+   {q:'Yesterday I ___ to the market. (go)',big:'🚶',say:'Yesterday I what to the market?',lang:'en-US',opts:[{g:'went',ok:1},{g:'goed'},{g:'go'}],why:'"Go" is irregular — its past form is "went", not "goed".'},
+   {q:'I ___ a bird in the tree. (see)',big:'👀',say:'I what a bird in the tree?',lang:'en-US',opts:[{g:'saw',ok:1},{g:'seed'},{g:'seen'}],why:'The simple past of "see" is "saw".'},
+   {q:'I was late ___ the bus was slow.',big:'🚌',say:'I was late what the bus was slow?',lang:'en-US',opts:[{g:'because',ok:1},{g:'but'},{g:'or'}],why:'The slow bus is the REASON, and "because" introduces a reason.'},
+   {q:'It was raining ___ we still played.',big:'🌧️',say:'It was raining what we still played?',lang:'en-US',opts:[{g:'but',ok:1},{g:'because'},{g:'and'}],why:'The two ideas contrast, so "but" is the right joining word.'},
+   {q:'She ___ a letter yesterday. (write)',big:'✍️',say:'She what a letter yesterday?',lang:'en-US',opts:[{g:'wrote',ok:1},{g:'writed'},{g:'written'}],why:'"Write" is irregular: write → wrote.'}
+  ]},
+ {id:'en_t4_agreement',title:'Y4: Subject–Verb Agreement',sub:'He runs · They run',emoji:'🤝',sticker:'📗',a:[10],
+  slides:[
+   {t:'intro',emoji:'🤝',title:'Matching Subject and Verb',text:'One person adds -s to the verb: He runs. More than one does not: They run.',say:'One person adds s to the verb. He runs. More than one does not. They run.',lang:'en-US'},
+   {t:'soundboard',title:'Singular and plural',hint:'Tap to hear the difference.',lang:'en-US',items:[
+     {e:'🏃',l:'He runs / They run',say:'He runs fast. They run fast.'},
+     {e:'📖',l:'She reads / We read',say:'She reads daily. We read daily.'},
+     {e:'🐦',l:'The bird sings',say:'The bird sings. One bird, so add s.'},
+     {e:'🐦🐦',l:'The birds sing',say:'The birds sing. More than one, so no s.'}]},
+   {t:'practice',title:'Your turn',q:'My brother ___ football every day.',say:'My brother what football every day?',lang:'en-US',opts:[{g:'plays',ok:1},{g:'play'},{g:'playing'}]},
+   {t:'practice',title:'Your turn',q:'The students ___ in the hall.',say:'The students what in the hall?',lang:'en-US',opts:[{g:'are',ok:1},{g:'is'},{g:'am'}]},
+   {t:'sentence',title:'Build the sentence',hint:'Tap the words in the right order.',emoji:'🐦',
+    words:['The','birds','sing','every','morning'],say:'The birds sing every morning',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'My brother ___ football every day.',big:'⚽',say:'My brother what football every day?',lang:'en-US',opts:[{g:'plays',ok:1},{g:'play'},{g:'playing'}],why:'"My brother" is one person, so the verb takes -s: plays.'},
+   {q:'The students ___ in the hall.',big:'🏫',say:'The students what in the hall?',lang:'en-US',opts:[{g:'are',ok:1},{g:'is'},{g:'am'}],why:'"Students" is plural, so it takes "are".'},
+   {q:'She ___ to school by bus.',big:'🚌',say:'She what to school by bus?',lang:'en-US',opts:[{g:'goes',ok:1},{g:'go'},{g:'going'}],why:'"She" is singular. Verbs ending in -o add -es: go → goes.'},
+   {q:'The cats ___ on the mat.',big:'🐈',say:'The cats what on the mat?',lang:'en-US',opts:[{g:'sit',ok:1},{g:'sits'}],why:'"Cats" is plural, so the verb has NO -s: sit.'},
+   {q:'Which sentence is correct?',big:'✅',say:'Which sentence is correct?',lang:'en-US',opts:[{g:'My sister likes mangoes.',ok:1},{g:'My sister like mangoes.'}],why:'"My sister" is one person, so the verb needs -s: likes.'}
+  ]},
+ {id:'en_t5_adverb',title:'Y5: Adverbs & Comparisons',sub:'quickly · bigger · biggest',emoji:'📈',sticker:'📈',a:[11],
+  slides:[
+   {t:'intro',emoji:'📈',title:'Describing Actions',text:'An adverb tells HOW something is done, often ending in -ly: He ran quickly.',say:'An adverb tells how something is done, often ending in ly. He ran quickly.',lang:'en-US'},
+   {t:'soundboard',title:'Adverbs',hint:'Tap to hear each one.',lang:'en-US',items:[
+     {e:'🏃',l:'quickly',say:'He ran quickly to catch the bus.'},
+     {e:'🤫',l:'quietly',say:'She spoke quietly in the library.'},
+     {e:'😊',l:'happily',say:'They played happily together.'},
+     {e:'🐢',l:'slowly',say:'The tortoise moved slowly.'}]},
+   {t:'soundboard',title:'Comparing things',hint:'Tap to hear the pattern.',lang:'en-US',items:[
+     {e:'📏',l:'big → bigger → biggest',say:'Big. Bigger. Biggest.'},
+     {e:'🏃',l:'fast → faster → fastest',say:'Fast. Faster. Fastest.'},
+     {e:'😀',l:'good → better → best',say:'Good. Better. Best. This one is irregular.'},
+     {e:'🎨',l:'beautiful → more beautiful',say:'For long words we use more, not er. More beautiful.'}]},
+   {t:'practice',title:'Your turn',q:'He ran ___ to catch the bus.',say:'He ran how to catch the bus?',lang:'en-US',opts:[{g:'quickly',ok:1},{g:'quick'},{g:'quicker'}]},
+   {t:'practice',title:'Your turn',q:'An elephant is ___ than a dog.',say:'An elephant is what than a dog?',lang:'en-US',opts:[{g:'bigger',ok:1},{g:'big'},{g:'biggest'}]}
+  ],
+  quiz:[
+   {q:'He ran ___ to catch the bus.',big:'🏃',say:'He ran how to catch the bus?',lang:'en-US',opts:[{g:'quickly',ok:1},{g:'quick'},{g:'quicker'}],why:'It describes HOW he ran, so we need the adverb "quickly".'},
+   {q:'An elephant is ___ than a dog.',big:'🐘',say:'An elephant is what than a dog?',lang:'en-US',opts:[{g:'bigger',ok:1},{g:'big'},{g:'biggest'}],why:'Comparing TWO things uses -er: bigger than.'},
+   {q:'Mount Kinabalu is the ___ mountain in Malaysia.',big:'🏔️',say:'Mount Kinabalu is the what mountain in Malaysia?',lang:'en-US',opts:[{g:'highest',ok:1},{g:'higher'},{g:'high'}],why:'Comparing to ALL others uses -est: the highest.'},
+   {q:'good → better → ___',big:'😀',say:'Good, better, what?',lang:'en-US',opts:[{g:'best',ok:1},{g:'goodest'},{g:'more good'}],why:'"Good" is irregular: good, better, best.'},
+   {q:'She sang ___ in the concert.',big:'🎤',say:'She sang how in the concert?',lang:'en-US',opts:[{g:'beautifully',ok:1},{g:'beautiful'},{g:'beauty'}],why:'It describes how she sang, so use the adverb form ending in -ly.'}
+  ]},
+ {id:'en_t6_review',title:'Y6: Grammar Review & Reading',sub:'Tenses, vocabulary, comprehension',emoji:'🎓',sticker:'🎓',a:[12],
+  slides:[
+   {t:'intro',emoji:'🎓',title:'Putting It Together',text:'Year 6 pulls everything together: tenses, agreement, adverbs and careful reading.',say:'Year six pulls everything together. Tenses, agreement, adverbs and careful reading.',lang:'en-US'},
+   {t:'story',title:'The School Garden',emoji:'🌱',lang:'en-US',lines:[
+     {t:'Last year, the pupils of SK Bukit Jaya started a small garden behind the canteen.',e:'🏫',say:'Last year, the pupils of S K Bukit Jaya started a small garden behind the canteen.'},
+     {t:'They planted bayam, chillies and lady’s fingers in old tyres.',e:'🌶️',say:'They planted bayam, chillies and lady fingers in old tyres.'},
+     {t:'Every morning, two pupils water the plants before the bell rings.',e:'💧',say:'Every morning, two pupils water the plants before the bell rings.'},
+     {t:'The vegetables are sold cheaply to teachers, and the money buys more seeds.',e:'💰',say:'The vegetables are sold cheaply to teachers, and the money buys more seeds.'}],
+    moral:'The garden teaches responsibility and pays for itself.',say:'Tap each line to hear the passage.'},
+   {t:'practice',title:'Question 1',q:'Where is the garden?',say:'Where is the garden?',lang:'en-US',
+    opts:[{g:'Behind the canteen',ok:1},{g:'In front of the office'},{g:'On the roof'}]},
+   {t:'practice',title:'Question 2',q:'What is done with the money?',say:'What is done with the money?',lang:'en-US',
+    opts:[{g:'It buys more seeds',ok:1},{g:'It buys books'},{g:'It is shared out'}]},
+   {t:'practice',title:'Grammar check',q:'Two pupils ___ the plants every morning.',say:'Two pupils what the plants every morning?',lang:'en-US',
+    opts:[{g:'water',ok:1},{g:'waters'},{g:'watering'}]}
+  ],
+  quiz:[
+   {q:'Where is the school garden?',big:'🌱',say:'Where is the school garden?',lang:'en-US',
+    opts:[{g:'Behind the canteen',ok:1},{g:'In front of the office'},{g:'On the roof'}],why:'The first line states the garden is behind the canteen.'},
+   {q:'What did they plant the vegetables in?',big:'🌶️',say:'What did they plant the vegetables in?',lang:'en-US',
+    opts:[{g:'Old tyres',ok:1},{g:'Clay pots'},{g:'Plastic bags'}],why:'The passage says they planted them in old tyres.'},
+   {q:'Two pupils ___ the plants every morning.',big:'💧',say:'Two pupils what the plants every morning?',lang:'en-US',
+    opts:[{g:'water',ok:1},{g:'waters'},{g:'watering'}],why:'"Two pupils" is plural, so the verb takes no -s.'},
+   {q:'"Last year, they started…" — this is which tense?',big:'⏪',say:'Last year they started. Which tense is this?',lang:'en-US',
+    opts:[{g:'past',ok:1},{g:'present'},{g:'future'}],why:'"Last year" and "started" both show a finished action in the past.'},
+   {q:'The money is used to…',big:'💰',say:'The money is used to do what?',lang:'en-US',
+    opts:[{g:'buy more seeds',ok:1},{g:'pay the teachers'},{g:'repair the canteen'}],why:'The last line says the money buys more seeds, so the garden pays for itself.'}
+  ]}
+]);
+</script>
+<script>
+/* =====================================================================
+   SAINS — Tahun 2 hingga Tahun 6
+   ===================================================================== */
+chapAdd('sa',null,[
+ {id:'sa_t2_hidup',title:'T2: Keperluan Asas Hidupan',sub:'Makanan, air, udara, tempat',emoji:'🌿',sticker:'🌿',a:[8],
+  slides:[
+   {t:'intro',emoji:'🌿',title:'Apa Yang Hidupan Perlukan',text:'Manusia, haiwan dan tumbuhan perlukan makanan, air, udara dan tempat tinggal.',say:'Manusia, haiwan dan tumbuhan perlukan makanan, air, udara dan tempat tinggal.'},
+   {t:'soundboard',title:'Empat keperluan asas',hint:'Tekan untuk dengar.',items:[
+     {e:'🍚',l:'Makanan',say:'Makanan memberi tenaga untuk hidup dan membesar.'},
+     {e:'💧',l:'Air',say:'Air diperlukan oleh semua hidupan setiap hari.'},
+     {e:'💨',l:'Udara',say:'Udara mengandungi oksigen untuk bernafas.'},
+     {e:'🏠',l:'Tempat tinggal',say:'Tempat tinggal melindungi daripada cuaca dan bahaya.'}]},
+   {t:'match',title:'Hidupan & tempat tinggalnya',hint:'Seret haiwan ke tempat tinggalnya.',pairs:[
+     {e:'🐟',k:'Air'},{e:'🐦',k:'Sarang'},{e:'🐝',k:'Sarang'},{e:'🐠',k:'Air'}]},
+   {t:'practice',title:'Cuba jawab',q:'Semua hidupan bernafas menggunakan…',say:'Semua hidupan bernafas menggunakan apa?',opts:[{g:'udara',ok:1},{g:'tanah'},{g:'cahaya'}]},
+   {t:'practice',title:'Cuba jawab',q:'Tumbuhan membuat makanan menggunakan…',say:'Tumbuhan membuat makanan menggunakan apa?',opts:[{g:'cahaya matahari',ok:1},{g:'bunyi'},{g:'angin'}]}
+  ],
+  quiz:[
+   {q:'Semua hidupan bernafas menggunakan…',big:'💨',say:'Semua hidupan bernafas menggunakan apa?',opts:[{g:'udara',ok:1},{g:'tanah'},{g:'cahaya'}],why:'Udara mengandungi oksigen, dan semua hidupan memerlukannya untuk bernafas.'},
+   {q:'Yang manakah BUKAN keperluan asas hidupan?',big:'❓',say:'Yang manakah bukan keperluan asas hidupan?',opts:[{g:'Televisyen',ok:1},{g:'Air'},{g:'Makanan'}],why:'Televisyen ialah kehendak, bukan keperluan. Tanpa air atau makanan hidupan akan mati.'},
+   {q:'Ikan tinggal di…',big:'🐟',say:'Ikan tinggal di mana?',opts:[{g:'air',ok:1},{g:'pokok'},{g:'gua'}],why:'Ikan bernafas melalui insang dan hanya boleh hidup di dalam air.'},
+   {q:'Tumbuhan membuat makanan menggunakan…',big:'🌱',say:'Tumbuhan membuat makanan menggunakan apa?',opts:[{g:'cahaya matahari',ok:1},{g:'bunyi'},{g:'angin'}],why:'Daun menggunakan cahaya matahari untuk membuat makanan.'},
+   {q:'Tempat tinggal melindungi hidupan daripada…',big:'🏠',say:'Tempat tinggal melindungi hidupan daripada apa?',opts:[{g:'cuaca & musuh',ok:1},{g:'makanan'},{g:'air'}],why:'Tempat tinggal memberi perlindungan daripada hujan, panas dan pemangsa.'}
+  ]},
+ {id:'sa_t3_cahaya',title:'T3: Cahaya & Bunyi',sub:'Sumber, bayang, gema',emoji:'💡',sticker:'💡',a:[9],
+  slides:[
+   {t:'intro',emoji:'💡',title:'Cahaya & Bunyi',text:'Cahaya bergerak lurus dan menghasilkan bayang. Bunyi terhasil daripada getaran.',say:'Cahaya bergerak lurus dan menghasilkan bayang. Bunyi terhasil daripada getaran.'},
+   {t:'soundboard',title:'Sumber cahaya',hint:'Tekan untuk dengar.',items:[
+     {e:'☀️',l:'Matahari',say:'Matahari ialah sumber cahaya semula jadi yang utama.'},
+     {e:'🔦',l:'Lampu suluh',say:'Lampu suluh ialah sumber cahaya buatan.'},
+     {e:'🕯️',l:'Lilin',say:'Lilin menghasilkan cahaya dan haba.'},
+     {e:'🌙',l:'Bulan bukan sumber',say:'Bulan tidak menghasilkan cahaya sendiri. Ia memantulkan cahaya matahari.'}]},
+   {t:'soundboard',title:'Bunyi',hint:'Tekan untuk dengar.',items:[
+     {e:'🥁',l:'Getaran',say:'Bunyi terhasil apabila sesuatu bergetar.'},
+     {e:'🏔️',l:'Gema',say:'Gema ialah bunyi yang dipantulkan kembali.'},
+     {e:'📢',l:'Kuat & perlahan',say:'Bunyi boleh kuat atau perlahan.'},
+     {e:'🌊',l:'Merambat',say:'Bunyi merambat melalui udara, air dan pepejal.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Bayang terbentuk apabila cahaya…',say:'Bayang terbentuk apabila cahaya bagaimana?',opts:[{g:'dihalang',ok:1},{g:'dipantulkan'},{g:'ditelan'}]},
+   {t:'practice',title:'Cuba jawab',q:'Bunyi terhasil daripada…',say:'Bunyi terhasil daripada apa?',opts:[{g:'getaran',ok:1},{g:'cahaya'},{g:'haba'}]}
+  ],
+  quiz:[
+   {q:'Bayang terbentuk apabila cahaya…',big:'🌑',say:'Bayang terbentuk apabila cahaya bagaimana?',opts:[{g:'dihalang',ok:1},{g:'dipantulkan'},{g:'hilang'}],why:'Cahaya bergerak lurus. Apabila objek legap menghalangnya, kawasan gelap terbentuk di belakang objek itu.'},
+   {q:'Bunyi terhasil daripada…',big:'🥁',say:'Bunyi terhasil daripada apa?',opts:[{g:'getaran',ok:1},{g:'cahaya'},{g:'haba'}],why:'Apabila objek bergetar, ia menggerakkan udara di sekelilingnya dan kita dengar sebagai bunyi.'},
+   {q:'Yang manakah BUKAN sumber cahaya?',big:'🌙',say:'Yang manakah bukan sumber cahaya?',opts:[{g:'Bulan',ok:1},{g:'Matahari'},{g:'Lilin'}],why:'Bulan hanya memantulkan cahaya matahari; ia tidak menghasilkan cahaya sendiri.'},
+   {q:'Gema ialah bunyi yang…',big:'🏔️',say:'Gema ialah bunyi yang bagaimana?',opts:[{g:'dipantulkan kembali',ok:1},{g:'hilang terus'},{g:'bertambah kuat'}],why:'Bunyi melantun daripada permukaan keras seperti dinding gua dan kembali ke telinga kita.'},
+   {q:'Bunyi TIDAK boleh merambat melalui…',big:'🚀',say:'Bunyi tidak boleh merambat melalui apa?',opts:[{g:'vakum (angkasa)',ok:1},{g:'udara'},{g:'air'}],why:'Bunyi perlukan bahan perantara. Di angkasa tiada udara, jadi tiada bunyi.'}
+  ]},
+ {id:'sa_t4_badan',title:'T4: Sistem Badan Manusia',sub:'Pernafasan & pencernaan',emoji:'🫁',sticker:'🫀',a:[10],
+  slides:[
+   {t:'intro',emoji:'🫁',title:'Di Dalam Badan Kita',text:'Setiap sistem ada tugas: paru-paru untuk bernafas, perut untuk mencerna, jantung mengepam darah.',say:'Setiap sistem ada tugas. Paru paru untuk bernafas, perut untuk mencerna, jantung mengepam darah.'},
+   {t:'soundboard',title:'Organ & fungsinya',hint:'Tekan untuk dengar.',items:[
+     {e:'🫁',l:'Paru-paru',say:'Paru paru mengambil oksigen dan membuang karbon dioksida.'},
+     {e:'🫀',l:'Jantung',say:'Jantung mengepam darah ke seluruh badan.'},
+     {e:'🍽️',l:'Perut',say:'Perut mencernakan makanan yang kita telan.'},
+     {e:'🧠',l:'Otak',say:'Otak mengawal seluruh badan dan fikiran kita.'}]},
+   {t:'sequence',title:'Susun laluan pernafasan',hint:'Tekan ikut urutan yang betul.',steps:[
+     {e:'👃',l:'Hidung'},{e:'🫁',l:'Trakea'},{e:'🎈',l:'Paru-paru'},{e:'🩸',l:'Darah'}],say:'Susun laluan udara semasa bernafas.'},
+   {t:'practice',title:'Cuba jawab',q:'Organ yang mengepam darah ialah…',say:'Organ yang mengepam darah ialah apa?',opts:[{g:'jantung',ok:1},{g:'paru-paru'},{g:'perut'}]},
+   {t:'practice',title:'Cuba jawab',q:'Gas yang kita hembus keluar ialah…',say:'Gas yang kita hembus keluar ialah apa?',opts:[{g:'karbon dioksida',ok:1},{g:'oksigen'},{g:'nitrogen'}]}
+  ],
+  quiz:[
+   {q:'Organ yang mengepam darah ialah…',big:'🫀',say:'Organ yang mengepam darah ialah apa?',opts:[{g:'jantung',ok:1},{g:'paru-paru'},{g:'perut'}],why:'Jantung berfungsi seperti pam, menghantar darah ke seluruh badan.'},
+   {q:'Gas yang kita SEDUT masuk ialah…',big:'🫁',say:'Gas yang kita sedut masuk ialah apa?',opts:[{g:'oksigen',ok:1},{g:'karbon dioksida'}],why:'Kita menyedut oksigen dan menghembus karbon dioksida.'},
+   {q:'Makanan dicernakan di…',big:'🍽️',say:'Makanan dicernakan di mana?',opts:[{g:'perut & usus',ok:1},{g:'paru-paru'},{g:'jantung'}],why:'Perut dan usus memecahkan makanan supaya zat dapat diserap.'},
+   {q:'Organ yang mengawal fikiran ialah…',big:'🧠',say:'Organ yang mengawal fikiran ialah apa?',opts:[{g:'otak',ok:1},{g:'jantung'},{g:'perut'}],why:'Otak menghantar isyarat ke seluruh badan dan mengawal pemikiran.'},
+   {q:'Laluan udara bermula dari…',big:'👃',say:'Laluan udara bermula dari mana?',opts:[{g:'hidung',ok:1},{g:'paru-paru'},{g:'perut'}],why:'Udara masuk melalui hidung, turun ke trakea, kemudian ke paru-paru.'}
+  ]},
+ {id:'sa_t5_tenaga',title:'T5: Tenaga & Sumbernya',sub:'Boleh & tidak boleh diperbaharui',emoji:'⚡',sticker:'⚡',a:[11],
+  slides:[
+   {t:'intro',emoji:'⚡',title:'Tenaga',text:'Tenaga tidak boleh dicipta — ia hanya bertukar bentuk. Matahari ialah sumber utama.',say:'Tenaga tidak boleh dicipta. Ia hanya bertukar bentuk. Matahari ialah sumber utama.'},
+   {t:'soundboard',title:'Bentuk tenaga',hint:'Tekan untuk dengar.',items:[
+     {e:'☀️',l:'Tenaga suria',say:'Tenaga suria datang daripada matahari.'},
+     {e:'⚡',l:'Tenaga elektrik',say:'Tenaga elektrik menyalakan lampu dan alat.'},
+     {e:'🔥',l:'Tenaga haba',say:'Tenaga haba memberi kepanasan.'},
+     {e:'🏃',l:'Tenaga kinetik',say:'Tenaga kinetik ialah tenaga objek yang bergerak.'}]},
+   {t:'match',title:'Boleh atau tidak boleh diperbaharui?',hint:'Seret sumber ke kumpulan betul.',pairs:[
+     {e:'☀️',k:'Boleh diperbaharui'},{e:'⛽',k:'Tidak boleh diperbaharui'},
+     {e:'💨',k:'Boleh diperbaharui'},{e:'🪨',k:'Tidak boleh diperbaharui'}]},
+   {t:'practice',title:'Cuba jawab',q:'Sumber tenaga utama bumi ialah…',say:'Sumber tenaga utama bumi ialah apa?',opts:[{g:'matahari',ok:1},{g:'bulan'},{g:'angin'}]},
+   {t:'practice',title:'Cuba jawab',q:'Petrol ialah sumber yang…',say:'Petrol ialah sumber yang bagaimana?',opts:[{g:'tidak boleh diperbaharui',ok:1},{g:'boleh diperbaharui'}]}
+  ],
+  quiz:[
+   {q:'Sumber tenaga utama bumi ialah…',big:'☀️',say:'Sumber tenaga utama bumi ialah apa?',opts:[{g:'matahari',ok:1},{g:'bulan'},{g:'angin'}],why:'Hampir semua tenaga di bumi bermula daripada matahari, termasuk tenaga dalam makanan.'},
+   {q:'Petrol ialah sumber yang…',big:'⛽',say:'Petrol ialah sumber yang bagaimana?',opts:[{g:'tidak boleh diperbaharui',ok:1},{g:'boleh diperbaharui'}],why:'Petrol mengambil berjuta tahun untuk terbentuk, jadi ia akan habis.'},
+   {q:'Yang manakah BOLEH diperbaharui?',big:'💨',say:'Yang manakah boleh diperbaharui?',opts:[{g:'Angin',ok:1},{g:'Arang batu'},{g:'Gas asli'}],why:'Angin tidak akan habis selagi matahari memanaskan bumi.'},
+   {q:'Tenaga objek yang BERGERAK dipanggil…',big:'🏃',say:'Tenaga objek yang bergerak dipanggil apa?',opts:[{g:'kinetik',ok:1},{g:'haba'},{g:'suria'}],why:'Semua objek yang bergerak mempunyai tenaga kinetik.'},
+   {q:'Lampu menukar tenaga elektrik kepada…',big:'💡',say:'Lampu menukar tenaga elektrik kepada apa?',opts:[{g:'cahaya & haba',ok:1},{g:'bunyi'},{g:'kinetik'}],why:'Mentol memberi cahaya, dan ia juga menjadi panas — jadi kedua-duanya terhasil.'}
+  ]},
+ {id:'sa_t6_mesin',title:'T6: Mesin Ringkas & Kelajuan',sub:'Tuas, takal · laju = jarak ÷ masa',emoji:'⚙️',sticker:'⚙️',a:[12],
+  slides:[
+   {t:'intro',emoji:'⚙️',title:'Mesin Ringkas',text:'Mesin ringkas memudahkan kerja: tuas, takal, satah condong, skru, baji dan gear.',say:'Mesin ringkas memudahkan kerja. Tuas, takal, satah condong, skru, baji dan gear.'},
+   {t:'soundboard',title:'Jenis mesin ringkas',hint:'Tekan untuk dengar.',items:[
+     {e:'🪜',l:'Satah condong',say:'Satah condong seperti tanjakan memudahkan menaikkan beban.'},
+     {e:'⚖️',l:'Tuas',say:'Tuas seperti jongkang jongket menggunakan fulkrum.'},
+     {e:'🎣',l:'Takal',say:'Takal menggunakan roda dan tali untuk mengangkat beban.'},
+     {e:'🔩',l:'Skru',say:'Skru menukar putaran kepada gerakan lurus.'}]},
+   {t:'intro',emoji:'🏃',title:'Kelajuan',text:'Kelajuan = jarak ÷ masa. Jika 100 m diambil 20 saat, kelajuan ialah 5 m/s.',say:'Kelajuan sama dengan jarak dibahagi masa. Seratus meter dalam dua puluh saat memberi lima meter sesaat.'},
+   {t:'practice',title:'Cuba jawab',q:'100 m dalam 20 saat. Kelajuan ialah…',say:'Seratus meter dalam dua puluh saat. Kelajuan ialah?',opts:[{g:'5 m/s',ok:1},{g:'20 m/s'},{g:'2000 m/s'}]},
+   {t:'practice',title:'Cuba jawab',q:'Gunting menggunakan prinsip…',say:'Gunting menggunakan prinsip mesin ringkas apa?',opts:[{g:'tuas',ok:1},{g:'takal'},{g:'skru'}]}
+  ],
+  quiz:[
+   {q:'Kelajuan dikira dengan…',big:'🏃',say:'Kelajuan dikira dengan apa?',opts:[{g:'jarak ÷ masa',ok:1},{g:'jarak × masa'},{g:'masa ÷ jarak'}],why:'Kelajuan bermaksud jarak yang dilalui dalam satu unit masa, jadi jarak dibahagi masa.'},
+   {q:'100 m dalam 20 saat. Kelajuan ialah…',big:'⏱️',say:'Seratus meter dalam dua puluh saat. Kelajuan ialah?',opts:[{g:'5 m/s',ok:1},{g:'20 m/s'},{g:'80 m/s'}],why:'100 ÷ 20 = 5 meter sesaat.'},
+   {q:'Gunting menggunakan prinsip…',big:'✂️',say:'Gunting menggunakan prinsip mesin ringkas apa?',opts:[{g:'tuas',ok:1},{g:'takal'},{g:'skru'}],why:'Dua bilah gunting berputar pada satu fulkrum, sama seperti tuas.'},
+   {q:'Tanjakan untuk kerusi roda ialah…',big:'🪜',say:'Tanjakan untuk kerusi roda ialah mesin ringkas apa?',opts:[{g:'satah condong',ok:1},{g:'tuas'},{g:'gear'}],why:'Satah condong mengurangkan daya yang diperlukan untuk menaikkan sesuatu.'},
+   {q:'Mesin ringkas digunakan untuk…',big:'⚙️',say:'Mesin ringkas digunakan untuk apa?',opts:[{g:'memudahkan kerja',ok:1},{g:'menambah kerja'}],why:'Ia mengurangkan daya yang diperlukan, walaupun jaraknya mungkin bertambah.'}
+  ]}
+]);
+
+/* =====================================================================
+   SEJARAH — bermula Tahun 4 (subjek baharu)
+   ===================================================================== */
+SUBJECTS.push({id:'sj',name:'Sejarah',tag:'KSSR Tahun 4–6',emoji:'📜',from:'#d6a35c',to:'#92400e',lang:'ms-MY',
+ chapters:[
+  {id:'sj_t4_melaka',title:'T4: Kesultanan Melayu Melaka',sub:'Parameswara & zaman gemilang',emoji:'🏰',sticker:'🏰',a:[10],
+   slides:[
+    {t:'intro',emoji:'🏰',title:'Kesultanan Melayu Melaka',text:'Melaka diasaskan oleh Parameswara sekitar tahun 1400 dan menjadi pelabuhan terkenal.',say:'Melaka diasaskan oleh Parameswara sekitar tahun seribu empat ratus dan menjadi pelabuhan terkenal.'},
+    {t:'story',title:'Kisah Pembukaan Melaka',emoji:'🦌',lines:[
+      {t:'Parameswara berehat di bawah sebatang pokok ketika memburu.',e:'🌳',say:'Parameswara berehat di bawah sebatang pokok ketika memburu.'},
+      {t:'Seekor pelanduk menendang anjing perburuannya ke dalam sungai.',e:'🦌',say:'Seekor pelanduk menendang anjing perburuannya ke dalam sungai.'},
+      {t:'Baginda kagum dengan keberanian pelanduk itu.',e:'😲',say:'Baginda kagum dengan keberanian pelanduk itu.'},
+      {t:'Baginda menamakan tempat itu Melaka, sempena nama pokok tersebut.',e:'🏰',say:'Baginda menamakan tempat itu Melaka, sempena nama pokok tersebut.'}],
+     moral:'Melaka kemudian menjadi pusat perdagangan terpenting di rantau ini.',say:'Baca kisah pembukaan Melaka.'},
+    {t:'soundboard',title:'Tokoh & jawatan',hint:'Tekan untuk dengar.',items:[
+      {e:'👑',l:'Sultan',say:'Sultan ialah ketua kerajaan Melaka.'},
+      {e:'🗡️',l:'Bendahara',say:'Bendahara ialah jawatan kedua tertinggi, penasihat sultan.'},
+      {e:'⚓',l:'Syahbandar',say:'Syahbandar menguruskan pelabuhan dan pedagang asing.'},
+      {e:'🛡️',l:'Laksamana',say:'Laksamana ialah ketua angkatan laut. Hang Tuah terkenal sebagai laksamana.'}]},
+    {t:'practice',title:'Cuba jawab',q:'Siapakah pengasas Melaka?',say:'Siapakah pengasas Melaka?',opts:[{g:'Parameswara',ok:1},{g:'Hang Tuah'},{g:'Tun Perak'}]},
+    {t:'practice',title:'Cuba jawab',q:'Melaka terkenal sebagai pusat…',say:'Melaka terkenal sebagai pusat apa?',opts:[{g:'perdagangan',ok:1},{g:'perlombongan'},{g:'pertanian'}]}
+   ],
+   quiz:[
+    {q:'Siapakah pengasas Melaka?',big:'🏰',say:'Siapakah pengasas Melaka?',opts:[{g:'Parameswara',ok:1},{g:'Hang Tuah'},{g:'Tun Perak'}],why:'Parameswara membuka Melaka sekitar tahun 1400 selepas berpindah dari Temasik.'},
+    {q:'Melaka dinamakan sempena…',big:'🌳',say:'Melaka dinamakan sempena apa?',opts:[{g:'sebatang pokok',ok:1},{g:'nama sultan'},{g:'nama sungai'}],why:'Menurut riwayat, baginda berehat di bawah pokok melaka lalu menamakan tempat itu sedemikian.'},
+    {q:'Jawatan kedua tertinggi selepas sultan ialah…',big:'🗡️',say:'Jawatan kedua tertinggi selepas sultan ialah apa?',opts:[{g:'Bendahara',ok:1},{g:'Syahbandar'},{g:'Laksamana'}],why:'Bendahara ialah penasihat utama sultan dan ketua pentadbiran.'},
+    {q:'Siapa menguruskan pelabuhan dan pedagang asing?',big:'⚓',say:'Siapa yang menguruskan pelabuhan dan pedagang asing?',opts:[{g:'Syahbandar',ok:1},{g:'Bendahara'},{g:'Laksamana'}],why:'Syahbandar bertanggungjawab ke atas urusan pelabuhan dan pedagang luar.'},
+    {q:'Melaka terkenal sebagai pusat…',big:'⛵',say:'Melaka terkenal sebagai pusat apa?',opts:[{g:'perdagangan',ok:1},{g:'perlombongan'},{g:'pertanian'}],why:'Kedudukannya di Selat Melaka menjadikannya pelabuhan persinggahan pedagang dari Timur dan Barat.'}
+   ]},
+  {id:'sj_t5_penjajah',title:'T5: Kedatangan Kuasa Luar',sub:'Portugis, Belanda, British, Jepun',emoji:'⛵',sticker:'⚔️',a:[11],
+   slides:[
+    {t:'intro',emoji:'⛵',title:'Zaman Penjajahan',text:'Melaka jatuh ke tangan Portugis pada 1511, kemudian Belanda, British dan Jepun.',say:'Melaka jatuh ke tangan Portugis pada tahun seribu lima ratus sebelas, kemudian Belanda, British dan Jepun.'},
+    {t:'sequence',title:'Susun urutan penjajah',hint:'Tekan ikut urutan sejarah yang betul.',steps:[
+      {e:'⛵',l:'Portugis 1511'},{e:'🌷',l:'Belanda 1641'},{e:'👒',l:'British 1824'},{e:'🎌',l:'Jepun 1941'}],
+     say:'Susun urutan kuasa penjajah mengikut tahun.'},
+    {t:'soundboard',title:'Kesan penjajahan',hint:'Tekan untuk dengar.',items:[
+      {e:'🏰',l:'A Famosa',say:'Portugis membina kubu A Famosa di Melaka.'},
+      {e:'🏛️',l:'Stadthuys',say:'Belanda membina Stadthuys yang berwarna merah.'},
+      {e:'🚂',l:'Landasan kereta api',say:'British membina jalan kereta api dan lombong bijih timah.'},
+      {e:'🌾',l:'Ekonomi',say:'British memperkenalkan ladang getah secara besar besaran.'}]},
+    {t:'soundboard',title:'Tokoh penentang',hint:'Tekan untuk dengar.',items:[
+      {e:'🛡️',l:'Dol Said',say:'Dato Dol Said menentang British di Naning.'},
+      {e:'⚔️',l:'Mat Kilau',say:'Mat Kilau menentang British di Pahang.'},
+      {e:'🗡️',l:'Tok Janggut',say:'Tok Janggut menentang British di Kelantan.'},
+      {e:'🏹',l:'Rentap',say:'Rentap menentang James Brooke di Sarawak.'}]},
+    {t:'practice',title:'Cuba jawab',q:'Melaka jatuh ke tangan Portugis pada tahun…',say:'Melaka jatuh ke tangan Portugis pada tahun berapa?',opts:[{g:'1511',ok:1},{g:'1641'},{g:'1957'}]}
+   ],
+   quiz:[
+    {q:'Melaka jatuh ke tangan Portugis pada tahun…',big:'⛵',say:'Melaka jatuh ke tangan Portugis pada tahun berapa?',opts:[{g:'1511',ok:1},{g:'1641'},{g:'1824'}],why:'Portugis di bawah Alfonso de Albuquerque menawan Melaka pada tahun 1511.'},
+    {q:'Kubu A Famosa dibina oleh…',big:'🏰',say:'Kubu A Famosa dibina oleh siapa?',opts:[{g:'Portugis',ok:1},{g:'Belanda'},{g:'British'}],why:'Portugis membina A Famosa untuk mempertahankan Melaka selepas menawannya.'},
+    {q:'Kuasa penjajah SELEPAS Portugis ialah…',big:'🌷',say:'Kuasa penjajah selepas Portugis ialah siapa?',opts:[{g:'Belanda',ok:1},{g:'British'},{g:'Jepun'}],why:'Belanda mengalahkan Portugis dan menguasai Melaka pada tahun 1641.'},
+    {q:'Tok Janggut menentang British di…',big:'🗡️',say:'Tok Janggut menentang British di negeri mana?',opts:[{g:'Kelantan',ok:1},{g:'Pahang'},{g:'Perak'}],why:'Tok Janggut memimpin penentangan di Pasir Puteh, Kelantan pada tahun 1915.'},
+    {q:'British memperkenalkan ladang…',big:'🌾',say:'British memperkenalkan ladang apa secara besar besaran?',opts:[{g:'getah',ok:1},{g:'padi'},{g:'tebu'}],why:'Ladang getah dan lombong bijih timah menjadi tulang belakang ekonomi zaman British.'}
+   ]},
+  {id:'sj_t6_merdeka',title:'T6: Kemerdekaan & Malaysia',sub:'1957 · 1963 · Rukun Negara',emoji:'🇲🇾',sticker:'🇲🇾',a:[12],
+   slides:[
+    {t:'intro',emoji:'🇲🇾',title:'Jalan ke Kemerdekaan',text:'Perpaduan kaum melalui Parti Perikatan membawa kemerdekaan pada 31 Ogos 1957.',say:'Perpaduan kaum melalui Parti Perikatan membawa kemerdekaan pada tiga puluh satu Ogos seribu sembilan ratus lima puluh tujuh.'},
+    {t:'sequence',title:'Susun peristiwa penting',hint:'Tekan ikut urutan tahun.',steps:[
+      {e:'🤝',l:'Perikatan 1955'},{e:'✈️',l:'Rundingan London 1956'},{e:'🎊',l:'Merdeka 1957'},{e:'🗺️',l:'Malaysia 1963'}],
+     say:'Susun peristiwa menuju kemerdekaan.'},
+    {t:'soundboard',title:'Tokoh kemerdekaan',hint:'Tekan untuk dengar.',items:[
+      {e:'🧑‍⚖️',l:'Tunku Abdul Rahman',say:'Bapa Kemerdekaan dan Perdana Menteri pertama.'},
+      {e:'📘',l:'Tun Abdul Razak',say:'Bapa Pembangunan dan Perdana Menteri kedua.'},
+      {e:'🤝',l:'Tun Tan Cheng Lock',say:'Pemimpin MCA yang memperjuangkan perpaduan kaum.'},
+      {e:'🪷',l:'Tun V.T. Sambanthan',say:'Pemimpin MIC dalam Parti Perikatan.'}]},
+    {t:'soundboard',title:'Pembentukan Malaysia 1963',hint:'Tekan untuk dengar.',items:[
+      {e:'🗺️',l:'16 September 1963',say:'Malaysia dibentuk pada enam belas September seribu sembilan ratus enam puluh tiga.'},
+      {e:'🏝️',l:'Sabah & Sarawak',say:'Tanah Melayu bergabung dengan Sabah, Sarawak dan Singapura.'},
+      {e:'🚪',l:'Singapura keluar 1965',say:'Singapura keluar daripada Malaysia pada tahun seribu sembilan ratus enam puluh lima.'},
+      {e:'📜',l:'Rukun Negara 1970',say:'Rukun Negara diperkenalkan pada tahun seribu sembilan ratus tujuh puluh.'}]},
+    {t:'practice',title:'Cuba jawab',q:'Malaysia dibentuk pada tahun…',say:'Malaysia dibentuk pada tahun berapa?',opts:[{g:'1963',ok:1},{g:'1957'},{g:'1970'}]}
+   ],
+   quiz:[
+    {q:'Tanah Melayu merdeka pada…',big:'🎊',say:'Tanah Melayu merdeka pada tarikh apa?',opts:[{g:'31 Ogos 1957',ok:1},{g:'16 September 1963'},{g:'31 Ogos 1963'}],why:'Kemerdekaan diisytiharkan di Stadium Merdeka pada 31 Ogos 1957.'},
+    {q:'Malaysia dibentuk pada tahun…',big:'🗺️',say:'Malaysia dibentuk pada tahun berapa?',opts:[{g:'1963',ok:1},{g:'1957'},{g:'1970'}],why:'Malaysia terbentuk pada 16 September 1963 dengan gabungan Tanah Melayu, Sabah, Sarawak dan Singapura.'},
+    {q:'Siapakah Perdana Menteri PERTAMA?',big:'🧑‍⚖️',say:'Siapakah Perdana Menteri pertama?',opts:[{g:'Tunku Abdul Rahman',ok:1},{g:'Tun Abdul Razak'},{g:'Tun Hussein Onn'}],why:'Tunku Abdul Rahman memimpin rundingan kemerdekaan dan menjadi PM pertama.'},
+    {q:'Negara yang keluar daripada Malaysia pada 1965 ialah…',big:'🚪',say:'Negara yang keluar daripada Malaysia pada tahun enam lima ialah?',opts:[{g:'Singapura',ok:1},{g:'Sabah'},{g:'Brunei'}],why:'Singapura berpisah daripada Malaysia pada 9 Ogos 1965.'},
+    {q:'Rukun Negara diperkenalkan selepas peristiwa…',big:'📜',say:'Rukun Negara diperkenalkan selepas peristiwa apa?',opts:[{g:'13 Mei 1969',ok:1},{g:'Merdeka 1957'},{g:'Perang Dunia'}],why:'Ia diperkenalkan pada 1970 untuk mengukuhkan perpaduan selepas rusuhan kaum 13 Mei 1969.'}
+   ]}
+ ]});
+</script>
+<script>
+/* =====================================================================
+   PENDIDIKAN ISLAM & JAWI — Tahun 2 hingga Tahun 6
+   ===================================================================== */
+chapAdd('ji',null,[
+ {id:'ji_t2_tajwid',title:'T2: Tanda Bacaan Al-Quran',sub:'Sukun, syaddah, panjang',emoji:'📖',sticker:'📖',a:[8],
+  slides:[
+   {t:'intro',emoji:'📖',title:'Tanda Bacaan',text:'Selain baris, ada tanda lain: sukun (mati), syaddah (sabdu) dan tanda panjang.',say:'Selain baris, ada tanda lain. Sukun bermaksud mati, syaddah bermaksud sabdu, dan ada tanda panjang.'},
+   {t:'soundboard',title:'Tanda & bunyinya',hint:'Tekan untuk dengar.',items:[
+     {e:'ْ',l:'Sukun — huruf mati',say:'Sukun menjadikan huruf itu mati, tanpa baris.'},
+     {e:'ّ',l:'Syaddah — sabdu',say:'Syaddah menjadikan huruf itu digandakan.'},
+     {e:'ا',l:'Alif — panjang 2 harakat',say:'Alif selepas baris atas memanjangkan bacaan dua harakat.'},
+     {e:'📏',l:'Mad',say:'Mad bermaksud memanjangkan bacaan.'}]},
+   {t:'letter',glyph:'بَبْ',jawi:1,word:'Ba dengan sukun',emoji:'📖',hint:'Huruf kedua mati — dibaca "bab"',say:'Bab'},
+   {t:'practice',title:'Cuba jawab',q:'Sukun menjadikan huruf itu…',say:'Sukun menjadikan huruf itu bagaimana?',opts:[{g:'mati',ok:1},{g:'panjang'},{g:'berganda'}]},
+   {t:'practice',title:'Cuba jawab',q:'Syaddah menjadikan huruf itu…',say:'Syaddah menjadikan huruf itu bagaimana?',opts:[{g:'berganda',ok:1},{g:'mati'},{g:'hilang'}]}
+  ],
+  quiz:[
+   {q:'Sukun menjadikan huruf itu…',big:'📖',say:'Sukun menjadikan huruf itu bagaimana?',opts:[{g:'mati',ok:1},{g:'panjang'},{g:'berganda'}],why:'Tanda sukun bermaksud huruf itu tidak berbaris — dibaca mati.'},
+   {q:'Syaddah menjadikan huruf itu…',big:'📖',say:'Syaddah menjadikan huruf itu bagaimana?',opts:[{g:'berganda',ok:1},{g:'mati'},{g:'senyap'}],why:'Syaddah atau sabdu bermaksud huruf itu dibaca dua kali (digandakan).'},
+   {q:'"Mad" bermaksud…',big:'📏',say:'Mad bermaksud apa?',opts:[{g:'memanjangkan bacaan',ok:1},{g:'memendekkan'},{g:'menghentikan'}],why:'Mad ialah hukum memanjangkan sebutan huruf tertentu.'},
+   {q:'Baris atas memberi bunyi…',big:'✨',say:'Baris atas memberi bunyi apa?',opts:[{g:'a',ok:1},{g:'i'},{g:'u'}],why:'Fathah (baris atas) sentiasa memberi bunyi "a".'},
+   {q:'Al-Quran dibaca dari arah…',big:'📜',say:'Al Quran dibaca dari arah mana?',opts:[{g:'kanan ke kiri',ok:1},{g:'kiri ke kanan'}],why:'Tulisan Arab dan Jawi dibaca dari kanan ke kiri.'}
+  ]},
+ {id:'ji_t3_akhlak',title:'T3: Akhlak & Adab Islam',sub:'Ibu bapa, guru, jiran',emoji:'🤲',sticker:'💚',a:[9],
+  slides:[
+   {t:'intro',emoji:'🤲',title:'Akhlak Mulia',text:'Islam mengajar adab terhadap ibu bapa, guru, jiran dan alam.',say:'Islam mengajar adab terhadap ibu bapa, guru, jiran dan alam.'},
+   {t:'soundboard',title:'Adab harian',hint:'Tekan untuk dengar.',items:[
+     {e:'👨‍👩‍👧',l:'Adab dengan ibu bapa',say:'Bercakap lembut, taat dan mendoakan mereka.'},
+     {e:'👩‍🏫',l:'Adab dengan guru',say:'Mendengar, memberi salam dan menghormati guru.'},
+     {e:'🏘️',l:'Adab dengan jiran',say:'Tidak mengganggu dan membantu jiran yang memerlukan.'},
+     {e:'🌳',l:'Adab dengan alam',say:'Tidak membazir air dan tidak merosakkan tumbuhan.'}]},
+   {t:'soundboard',title:'Sifat terpuji',hint:'Tekan untuk dengar.',items:[
+     {e:'✅',l:'Amanah',say:'Amanah bermaksud boleh dipercayai.'},
+     {e:'🤝',l:'Sabar',say:'Sabar bermaksud menahan diri ketika diuji.'},
+     {e:'❤️',l:'Pemurah',say:'Pemurah bermaksud suka bersedekah dan membantu.'},
+     {e:'🙏',l:'Syukur',say:'Syukur bermaksud menghargai nikmat Allah.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Bercakap dengan ibu bapa perlu…',say:'Bercakap dengan ibu bapa perlu bagaimana?',opts:[{g:'lembut & hormat',ok:1},{g:'kuat & keras'}]},
+   {t:'practice',title:'Cuba jawab',q:'Orang yang boleh dipercayai bersifat…',say:'Orang yang boleh dipercayai bersifat apa?',opts:[{g:'amanah',ok:1},{g:'sombong'}]}
+  ],
+  quiz:[
+   {q:'Bercakap dengan ibu bapa perlu…',big:'👨‍👩‍👧',say:'Bercakap dengan ibu bapa perlu bagaimana?',opts:[{g:'lembut & hormat',ok:1},{g:'kuat & keras'}],why:'Islam menekankan berbuat baik dan bertutur lembut kepada kedua ibu bapa.'},
+   {q:'Orang yang boleh dipercayai bersifat…',big:'✅',say:'Orang yang boleh dipercayai bersifat apa?',opts:[{g:'amanah',ok:1},{g:'sombong'},{g:'malas'}],why:'Amanah bermaksud menunaikan tanggungjawab dan tidak mengkhianati kepercayaan.'},
+   {q:'Menahan diri ketika diuji dipanggil…',big:'🤝',say:'Menahan diri ketika diuji dipanggil apa?',opts:[{g:'sabar',ok:1},{g:'marah'}],why:'Sabar ialah menahan diri daripada mengeluh dan terus berusaha.'},
+   {q:'Adab terhadap jiran termasuk…',big:'🏘️',say:'Adab terhadap jiran termasuk apa?',opts:[{g:'tidak mengganggu',ok:1},{g:'buat bising malam'}],why:'Islam menuntut kita menjaga hak jiran, termasuk tidak menyusahkan mereka.'},
+   {q:'Menghargai nikmat Allah dipanggil…',big:'🙏',say:'Menghargai nikmat Allah dipanggil apa?',opts:[{g:'syukur',ok:1},{g:'sabar'},{g:'amanah'}],why:'Syukur ialah mengakui dan berterima kasih atas pemberian Allah.'}
+  ]},
+ {id:'ji_t4_puasa',title:'T4: Puasa & Zakat',sub:'Rukun Islam ketiga & keempat',emoji:'🌙',sticker:'🌙',a:[10],
+  slides:[
+   {t:'intro',emoji:'🌙',title:'Puasa & Zakat',text:'Puasa Ramadan mendidik sabar. Zakat membersihkan harta dan membantu yang memerlukan.',say:'Puasa Ramadan mendidik sabar. Zakat membersihkan harta dan membantu yang memerlukan.'},
+   {t:'soundboard',title:'Tentang puasa',hint:'Tekan untuk dengar.',items:[
+     {e:'🌅',l:'Bermula subuh',say:'Puasa bermula dari terbit fajar hingga terbenam matahari.'},
+     {e:'🍽️',l:'Sahur & berbuka',say:'Sahur sebelum subuh, berbuka selepas maghrib.'},
+     {e:'🌙',l:'Bulan Ramadan',say:'Puasa wajib dilakukan sepanjang bulan Ramadan.'},
+     {e:'💚',l:'Mendidik sabar',say:'Puasa mendidik kita sabar dan memahami kesusahan orang miskin.'}]},
+   {t:'soundboard',title:'Tentang zakat',hint:'Tekan untuk dengar.',items:[
+     {e:'🌾',l:'Zakat fitrah',say:'Zakat fitrah dibayar sebelum solat Aidilfitri.'},
+     {e:'💰',l:'Zakat harta',say:'Zakat harta dikeluarkan daripada simpanan yang cukup syarat.'},
+     {e:'🤲',l:'Asnaf',say:'Zakat diberikan kepada golongan yang berhak, dipanggil asnaf.'},
+     {e:'✨',l:'Membersihkan',say:'Zakat membersihkan harta dan hati daripada sifat bakhil.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Puasa Ramadan ialah rukun Islam ke…',say:'Puasa Ramadan ialah rukun Islam yang ke berapa?',opts:[{g:'4',ok:1},{g:'2'},{g:'5'}]},
+   {t:'practice',title:'Cuba jawab',q:'Zakat fitrah dibayar sebelum…',say:'Zakat fitrah dibayar sebelum apa?',opts:[{g:'solat Aidilfitri',ok:1},{g:'bulan Ramadan'}]}
+  ],
+  quiz:[
+   {q:'Puasa bermula dari…',big:'🌅',say:'Puasa bermula dari bila?',opts:[{g:'terbit fajar',ok:1},{g:'tengah hari'},{g:'maghrib'}],why:'Puasa bermula ketika masuk waktu Subuh (terbit fajar) hingga terbenam matahari.'},
+   {q:'Puasa Ramadan ialah rukun Islam ke…',big:'🌙',say:'Puasa Ramadan ialah rukun Islam yang ke berapa?',opts:[{g:'4',ok:1},{g:'2'},{g:'5'}],why:'Susunannya: syahadah, solat, zakat, puasa, haji — puasa yang keempat.'},
+   {q:'Zakat fitrah dibayar sebelum…',big:'🌾',say:'Zakat fitrah dibayar sebelum apa?',opts:[{g:'solat Aidilfitri',ok:1},{g:'bulan Ramadan'}],why:'Zakat fitrah wajib ditunaikan sebelum solat sunat Aidilfitri.'},
+   {q:'Golongan yang berhak menerima zakat dipanggil…',big:'🤲',say:'Golongan yang berhak menerima zakat dipanggil apa?',opts:[{g:'asnaf',ok:1},{g:'amil sahaja'},{g:'jemaah'}],why:'Terdapat lapan golongan asnaf yang berhak menerima zakat.'},
+   {q:'Puasa mendidik kita bersifat…',big:'💚',say:'Puasa mendidik kita bersifat apa?',opts:[{g:'sabar',ok:1},{g:'sombong'}],why:'Menahan lapar dan dahaga melatih kesabaran serta empati terhadap orang susah.'}
+  ]},
+ {id:'ji_t5_sirah',title:'T5: Sirah — Hijrah & Piagam Madinah',sub:'Perpindahan ke Madinah',emoji:'🐪',sticker:'🕌',a:[11],
+  slides:[
+   {t:'intro',emoji:'🐪',title:'Hijrah ke Madinah',text:'Nabi Muhammad SAW berhijrah dari Mekah ke Madinah, memulakan takwim Hijrah.',say:'Nabi Muhammad berhijrah dari Mekah ke Madinah, memulakan takwim Hijrah.'},
+   {t:'story',title:'Peristiwa Hijrah',emoji:'🕌',lines:[
+     {t:'Umat Islam di Mekah ditindas dan disakiti.',e:'😞',say:'Umat Islam di Mekah ditindas dan disakiti.'},
+     {t:'Nabi Muhammad SAW diperintahkan berhijrah ke Madinah.',e:'🐪',say:'Nabi Muhammad diperintahkan berhijrah ke Madinah.'},
+     {t:'Baginda bersembunyi di Gua Thur bersama Abu Bakar.',e:'🕳️',say:'Baginda bersembunyi di Gua Thur bersama Abu Bakar.'},
+     {t:'Di Madinah, baginda membina masjid dan menyatukan penduduk.',e:'🕌',say:'Di Madinah, baginda membina masjid dan menyatukan penduduk.'}],
+    moral:'Hijrah mengajar kita berani berubah demi kebaikan.',say:'Baca kisah hijrah baris demi baris.'},
+   {t:'soundboard',title:'Selepas hijrah',hint:'Tekan untuk dengar.',items:[
+     {e:'🕌',l:'Masjid Quba',say:'Masjid pertama dibina dalam Islam ialah Masjid Quba.'},
+     {e:'🤝',l:'Muhajirin & Ansar',say:'Muhajirin ialah yang berhijrah, Ansar ialah penduduk Madinah yang menolong.'},
+     {e:'📜',l:'Piagam Madinah',say:'Piagam Madinah ialah perlembagaan bertulis pertama di dunia.'},
+     {e:'📅',l:'Takwim Hijrah',say:'Peristiwa hijrah menjadi permulaan kiraan tahun Hijrah.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Nabi berhijrah dari Mekah ke…',say:'Nabi berhijrah dari Mekah ke mana?',opts:[{g:'Madinah',ok:1},{g:'Taif'},{g:'Habsyah'}]}
+  ],
+  quiz:[
+   {q:'Nabi berhijrah dari Mekah ke…',big:'🐪',say:'Nabi berhijrah dari Mekah ke mana?',opts:[{g:'Madinah',ok:1},{g:'Taif'},{g:'Mesir'}],why:'Baginda berhijrah ke Madinah, yang sebelum itu dikenali sebagai Yathrib.'},
+   {q:'Siapa menemani Nabi bersembunyi di Gua Thur?',big:'🕳️',say:'Siapa menemani Nabi bersembunyi di Gua Thur?',opts:[{g:'Abu Bakar',ok:1},{g:'Umar'},{g:'Ali'}],why:'Abu Bakar as-Siddiq menemani baginda sepanjang perjalanan hijrah.'},
+   {q:'Penduduk Madinah yang menolong dipanggil…',big:'🤝',say:'Penduduk Madinah yang menolong dipanggil apa?',opts:[{g:'Ansar',ok:1},{g:'Muhajirin'},{g:'Quraisy'}],why:'Ansar bermaksud penolong; Muhajirin pula ialah mereka yang berhijrah.'},
+   {q:'Piagam Madinah ialah…',big:'📜',say:'Piagam Madinah ialah apa?',opts:[{g:'perlembagaan bertulis',ok:1},{g:'sebuah masjid'},{g:'nama tentera'}],why:'Ia dokumen bertulis yang mengatur hubungan antara kaum di Madinah.'},
+   {q:'Peristiwa hijrah menjadi permulaan…',big:'📅',say:'Peristiwa hijrah menjadi permulaan apa?',opts:[{g:'takwim Hijrah',ok:1},{g:'bulan Ramadan'}],why:'Kalendar Islam mengira tahun bermula daripada tahun hijrah.'}
+  ]},
+ {id:'ji_t6_ibadah',title:'T6: Ibadah & Tanggungjawab',sub:'Solat jemaah, haji, akhlak',emoji:'🕋',sticker:'🕋',a:[12],
+  slides:[
+   {t:'intro',emoji:'🕋',title:'Ibadah Sepanjang Hayat',text:'Solat, puasa, zakat dan haji melengkapkan rukun Islam. Setiap satu ada hikmahnya.',say:'Solat, puasa, zakat dan haji melengkapkan rukun Islam. Setiap satu ada hikmahnya.'},
+   {t:'soundboard',title:'Solat berjemaah',hint:'Tekan untuk dengar.',items:[
+     {e:'🕌',l:'Pahala 27 kali',say:'Solat berjemaah lebih afdal daripada solat sendirian.'},
+     {e:'👳',l:'Imam & makmum',say:'Imam memimpin, makmum mengikut.'},
+     {e:'📏',l:'Saf lurus',say:'Saf hendaklah lurus dan rapat.'},
+     {e:'🤝',l:'Perpaduan',say:'Solat berjemaah mengeratkan hubungan sesama Islam.'}]},
+   {t:'soundboard',title:'Ibadah haji',hint:'Tekan untuk dengar.',items:[
+     {e:'🕋',l:'Tawaf',say:'Tawaf ialah mengelilingi Kaabah tujuh kali.'},
+     {e:'🏃',l:'Saie',say:'Saie ialah berjalan antara Bukit Safa dan Marwah.'},
+     {e:'🏔️',l:'Wukuf di Arafah',say:'Wukuf di Arafah ialah rukun haji yang paling utama.'},
+     {e:'👕',l:'Ihram',say:'Ihram ialah pakaian dan niat khusus bagi haji dan umrah.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Mengelilingi Kaabah 7 kali dipanggil…',say:'Mengelilingi Kaabah tujuh kali dipanggil apa?',opts:[{g:'tawaf',ok:1},{g:'saie'},{g:'wukuf'}]},
+   {t:'practice',title:'Cuba jawab',q:'Haji wajib bagi yang…',say:'Haji wajib bagi siapa?',opts:[{g:'berkemampuan',ok:1},{g:'semua orang'}]}
+  ],
+  quiz:[
+   {q:'Mengelilingi Kaabah 7 kali dipanggil…',big:'🕋',say:'Mengelilingi Kaabah tujuh kali dipanggil apa?',opts:[{g:'tawaf',ok:1},{g:'saie'},{g:'wukuf'}],why:'Tawaf ialah mengelilingi Kaabah sebanyak tujuh pusingan.'},
+   {q:'Berjalan antara Safa dan Marwah dipanggil…',big:'🏃',say:'Berjalan antara Safa dan Marwah dipanggil apa?',opts:[{g:'saie',ok:1},{g:'tawaf'},{g:'ihram'}],why:'Saie mengingati usaha Siti Hajar mencari air untuk anaknya.'},
+   {q:'Rukun haji yang paling utama ialah…',big:'🏔️',say:'Rukun haji yang paling utama ialah apa?',opts:[{g:'wukuf di Arafah',ok:1},{g:'tawaf'},{g:'saie'}],why:'Tanpa wukuf di Arafah, haji seseorang tidak sah.'},
+   {q:'Haji diwajibkan ke atas yang…',big:'✈️',say:'Haji diwajibkan ke atas siapa?',opts:[{g:'berkemampuan',ok:1},{g:'semua orang Islam'}],why:'Syaratnya termasuk kemampuan dari segi kesihatan, kewangan dan keselamatan.'},
+   {q:'Dalam solat berjemaah, makmum…',big:'🕌',say:'Dalam solat berjemaah, makmum perlu bagaimana?',opts:[{g:'mengikut imam',ok:1},{g:'mendahului imam'}],why:'Makmum wajib mengikut pergerakan imam, tidak mendahuluinya.'}
+  ]}
+]);
+
+/* =====================================================================
+   PENDIDIKAN MORAL — Tahun 2 hingga Tahun 6
+   ===================================================================== */
+chapAdd('pm',null,[
+ {id:'pm_t2_sekolah',title:'T2: Hidup Bersama di Sekolah',sub:'Bertimbang rasa & berkongsi',emoji:'🏫',sticker:'🤝',a:[8],
+  slides:[
+   {t:'intro',emoji:'🏫',title:'Hidup Bersama',text:'Di sekolah kita belajar bertimbang rasa, berkongsi dan menghormati perbezaan.',say:'Di sekolah kita belajar bertimbang rasa, berkongsi dan menghormati perbezaan.'},
+   {t:'soundboard',title:'Nilai di sekolah',hint:'Tekan untuk dengar.',items:[
+     {e:'🤝',l:'Bertimbang rasa',say:'Memikirkan perasaan orang lain sebelum bertindak.'},
+     {e:'🍱',l:'Berkongsi',say:'Berkongsi alat tulis dan makanan dengan rakan.'},
+     {e:'🌏',l:'Hormat perbezaan',say:'Rakan berlainan bangsa dan agama tetap dihormati.'},
+     {e:'🙋',l:'Bekerjasama',say:'Bekerjasama menjadikan kerja lebih mudah.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Rakan tiada pemadam. Kita…',say:'Rakan tiada pemadam. Apa kita buat?',opts:[{g:'pinjamkan',ok:1},{g:'biarkan'}]},
+   {t:'practice',title:'Cuba jawab',q:'Rakan berlainan agama patut…',say:'Rakan berlainan agama patut dilayan bagaimana?',opts:[{g:'dihormati',ok:1},{g:'dijauhi'}]},
+   {t:'match',title:'Baik atau tidak?',hint:'Seret perbuatan ke kumpulan betul.',pairs:[
+     {e:'🤝',k:'Baik'},{e:'😠',k:'Tidak baik'},{e:'🍱',k:'Baik'}]}
+  ],
+  quiz:[
+   {q:'Rakan tiada pemadam. Kita…',big:'✏️',say:'Rakan tiada pemadam. Apa kita buat?',opts:[{g:'pinjamkan',ok:1},{g:'biarkan'}],why:'Berkongsi menunjukkan sifat bertimbang rasa terhadap rakan.'},
+   {q:'Rakan berlainan agama patut…',big:'🌏',say:'Rakan berlainan agama patut dilayan bagaimana?',opts:[{g:'dihormati',ok:1},{g:'dijauhi'}],why:'Malaysia berbilang kaum — menghormati perbezaan menjaga perpaduan.'},
+   {q:'Kerja berkumpulan menjadi mudah apabila…',big:'🙋',say:'Kerja berkumpulan menjadi mudah apabila apa?',opts:[{g:'semua bekerjasama',ok:1},{g:'seorang buat semua'}],why:'Setiap ahli menyumbang, jadi kerja selesai lebih cepat dan adil.'},
+   {q:'Memikirkan perasaan orang lain dipanggil…',big:'🤝',say:'Memikirkan perasaan orang lain dipanggil apa?',opts:[{g:'bertimbang rasa',ok:1},{g:'mementingkan diri'}],why:'Bertimbang rasa bermaksud mengambil kira kesan tindakan kita pada orang lain.'},
+   {q:'Rakan tersalah jawab di kelas. Kita…',big:'🙊',say:'Rakan tersalah jawab di kelas. Apa kita buat?',opts:[{g:'beri semangat',ok:1},{g:'ketawakan dia'}],why:'Mengejek melukakan hati; memberi semangat membina keyakinan rakan.'}
+  ]},
+ {id:'pm_t4_masyarakat',title:'T4: Tanggungjawab Warganegara',sub:'Undang-undang & harta awam',emoji:'🏛️',sticker:'🏛️',a:[10],
+  slides:[
+   {t:'intro',emoji:'🏛️',title:'Warganegara Bertanggungjawab',text:'Mematuhi undang-undang dan menjaga harta awam ialah tanggungjawab semua.',say:'Mematuhi undang undang dan menjaga harta awam ialah tanggungjawab semua.'},
+   {t:'soundboard',title:'Tanggungjawab kita',hint:'Tekan untuk dengar.',items:[
+     {e:'🚦',l:'Patuh undang-undang jalan',say:'Melintas di tempat yang betul dan mematuhi lampu isyarat.'},
+     {e:'🪑',l:'Jaga harta awam',say:'Tidak mencalar kerusi, tandas atau perhentian bas.'},
+     {e:'🗑️',l:'Buang sampah betul',say:'Buang sampah di tempatnya, bukan merata rata.'},
+     {e:'🤐',l:'Hormat ketenteraman',say:'Tidak membuat bising yang mengganggu orang lain.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Mencalar kerusi perhentian bas ialah…',say:'Mencalar kerusi perhentian bas ialah perbuatan apa?',opts:[{g:'vandalisme',ok:1},{g:'seni'},{g:'permainan'}]},
+   {t:'practice',title:'Cuba jawab',q:'Harta awam dimiliki oleh…',say:'Harta awam dimiliki oleh siapa?',opts:[{g:'semua rakyat',ok:1},{g:'kerajaan sahaja'},{g:'tiada siapa'}]},
+   {t:'practice',title:'Cuba jawab',q:'Nampak kawan membuang sampah merata. Kita…',say:'Nampak kawan membuang sampah merata. Apa kita buat?',opts:[{g:'tegur dengan baik',ok:1},{g:'ikut sama'}]}
+  ],
+  quiz:[
+   {q:'Mencalar harta awam dipanggil…',big:'🪑',say:'Mencalar harta awam dipanggil apa?',opts:[{g:'vandalisme',ok:1},{g:'seni'},{g:'permainan'}],why:'Vandalisme ialah merosakkan harta benda awam, dan ia satu kesalahan.'},
+   {q:'Harta awam dimiliki oleh…',big:'🏛️',say:'Harta awam dimiliki oleh siapa?',opts:[{g:'semua rakyat',ok:1},{g:'tiada siapa'}],why:'Ia dibina dengan wang rakyat, jadi semua orang bertanggungjawab menjaganya.'},
+   {q:'Melintas jalan patut di…',big:'🚦',say:'Melintas jalan patut di mana?',opts:[{g:'lintasan pejalan kaki',ok:1},{g:'mana-mana sahaja'}],why:'Lintasan zebra dan jejantas direka supaya pemandu nampak kita dengan jelas.'},
+   {q:'Nampak kawan membuang sampah merata. Kita…',big:'🗑️',say:'Nampak kawan membuang sampah merata. Apa kita buat?',opts:[{g:'tegur dengan baik',ok:1},{g:'ikut sama'}],why:'Menegur secara sopan membantu kawan memperbaiki tabiat tanpa menyinggung.'},
+   {q:'Mematuhi undang-undang menjadikan masyarakat…',big:'⚖️',say:'Mematuhi undang undang menjadikan masyarakat bagaimana?',opts:[{g:'selamat & teratur',ok:1},{g:'huru-hara'}],why:'Peraturan wujud supaya semua orang selamat dan hak setiap orang terpelihara.'}
+  ]},
+ {id:'pm_t6_integriti',title:'T6: Integriti & Media',sub:'Jujur dalam talian',emoji:'📱',sticker:'🛡️',a:[12],
+  slides:[
+   {t:'intro',emoji:'📱',title:'Integriti Dalam Talian',text:'Dunia digital juga memerlukan kejujuran, hormat dan tanggungjawab.',say:'Dunia digital juga memerlukan kejujuran, hormat dan tanggungjawab.'},
+   {t:'soundboard',title:'Adab dalam talian',hint:'Tekan untuk dengar.',items:[
+     {e:'🔍',l:'Semak dahulu',say:'Semak kesahihan sesuatu berita sebelum berkongsi.'},
+     {e:'🚫',l:'Jangan buli siber',say:'Jangan mengejek atau mengugut orang lain dalam talian.'},
+     {e:'🔒',l:'Jaga maklumat peribadi',say:'Jangan kongsi alamat, nombor telefon atau kata laluan.'},
+     {e:'©️',l:'Hormat hak cipta',say:'Beri kredit kepada penulis asal, jangan salin kerja orang.'}]},
+   {t:'practice',title:'Cuba jawab',q:'Terima berita mengejutkan. Kita patut…',say:'Terima berita mengejutkan. Apa kita patut buat?',opts:[{g:'semak kesahihan dahulu',ok:1},{g:'terus kongsi'}]},
+   {t:'practice',title:'Cuba jawab',q:'Orang tidak dikenali minta alamat rumah. Kita…',say:'Orang tidak dikenali minta alamat rumah. Apa kita buat?',opts:[{g:'tolak & beritahu dewasa',ok:1},{g:'beri sahaja'}]},
+   {t:'practice',title:'Cuba jawab',q:'Menyalin kerja orang tanpa kredit ialah…',say:'Menyalin kerja orang tanpa kredit ialah apa?',opts:[{g:'plagiarisme',ok:1},{g:'perkongsian'}]}
+  ],
+  quiz:[
+   {q:'Terima berita mengejutkan. Kita patut…',big:'🔍',say:'Terima berita mengejutkan. Apa kita patut buat?',opts:[{g:'semak kesahihan dahulu',ok:1},{g:'terus kongsi'}],why:'Berita palsu tersebar kerana dikongsi tanpa disemak. Semak sumbernya dahulu.'},
+   {q:'Orang tidak dikenali minta alamat rumah. Kita…',big:'🔒',say:'Orang tidak dikenali minta alamat rumah. Apa kita buat?',opts:[{g:'tolak & beritahu dewasa',ok:1},{g:'beri sahaja'}],why:'Maklumat peribadi boleh disalahgunakan. Beritahu ibu bapa atau guru.'},
+   {q:'Menyalin kerja orang tanpa kredit ialah…',big:'©️',say:'Menyalin kerja orang tanpa kredit ialah apa?',opts:[{g:'plagiarisme',ok:1},{g:'perkongsian'}],why:'Plagiarisme ialah mengambil kerja orang lain dan mengakuinya sebagai kerja sendiri.'},
+   {q:'Mengejek orang dalam talian dipanggil…',big:'🚫',say:'Mengejek orang dalam talian dipanggil apa?',opts:[{g:'buli siber',ok:1},{g:'bergurau'}],why:'Buli siber memberi kesan mendalam kepada mangsa walaupun dilakukan di skrin.'},
+   {q:'Integriti bermaksud…',big:'🛡️',say:'Integriti bermaksud apa?',opts:[{g:'jujur walau tiada orang nampak',ok:1},{g:'jujur bila diperhatikan'}],why:'Integriti ialah berpegang pada nilai betul walaupun tiada siapa memerhati.'}
+  ]}
+]);
 </script>
 <script>
 /* ============================================================
