@@ -154,6 +154,14 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
     <h2 class="font-fun text-2xl text-slate-700 mt-6 mb-1">📚 Pilih Subjek</h2>
     <p id="homeSubHint" class="font-fun text-sm text-slate-400 mb-3"></p>
     <div id="subjectGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+
+    <button id="btnPractice" class="tapp mt-4 w-full min-h-[76px] rounded-4xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white shadow-chunky font-fun text-xl px-5 flex items-center gap-3">
+      <span class="text-3xl">🎯</span>
+      <span class="flex-1 text-left">Latihan Pintar
+        <span class="block font-fun text-xs text-white/80">Soalan campur sampai Skor Pintar 100</span></span>
+      <span class="text-2xl">❯</span>
+    </button>
+
     <div id="stickerBook" class="mt-6 bg-white/80 backdrop-blur rounded-5xl p-4 shadow-chunky"></div>
 
     <button id="btnParent" class="tapp mt-6 w-full min-h-[72px] rounded-4xl bg-gradient-to-r from-slate-700 to-slate-900 text-white shadow-chunky font-fun text-xl">
@@ -286,6 +294,36 @@ input,textarea,select{-webkit-user-select:text;user-select:text}
     </div>
   </div>
 </section>
+
+<!-- ============ SCREEN: LATIHAN PINTAR ============ -->
+<section id="sc-practice" class="screen min-h-screen px-4 pt-20 pb-10">
+  <div class="max-w-2xl mx-auto">
+    <div class="flex items-center gap-3">
+      <button class="tapp navback w-14 h-14 rounded-4xl bg-white shadow-chunky text-lg text-slate-500" data-to="home" aria-label="Keluar">✕</button>
+      <div id="prHead" class="flex-1 min-w-0"></div>
+      <button id="prSwitch" class="tapp w-14 h-14 rounded-4xl bg-white shadow-chunky text-lg text-slate-500" aria-label="Tukar subjek">⇄</button>
+    </div>
+    <div id="prMeter" class="mt-3 bg-white/70 rounded-4xl p-3 shadow-chunky"></div>
+    <div id="prStats" class="mt-2 text-center"></div>
+    <div id="prCard" class="mt-3"></div>
+    <div id="prWhy" class="mt-4 hidden"></div>
+  </div>
+</section>
+
+<!-- ============ MODAL: PRACTICE SUBJECT PICKER ============ -->
+<div id="modalPick" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+  <div class="min-h-full flex items-center justify-center p-4">
+    <div class="bg-white rounded-5xl w-full max-w-lg shadow-chunky p-5 anim-in">
+      <div class="text-center">
+        <div class="text-5xl">🎯</div>
+        <h2 class="font-fun text-2xl text-slate-700 mt-1">Latihan Pintar</h2>
+        <p class="font-fun text-sm text-slate-400">Pilih subjek. Jawab sampai Skor Pintar 100!</p>
+      </div>
+      <div id="pickList" class="grid gap-3 mt-4"></div>
+      <button id="btnClosePick" class="tapp mt-4 w-full min-h-[56px] rounded-4xl bg-slate-100 font-fun text-lg text-slate-500">Tutup</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ MODAL: AGE PICKER ============ -->
 <div id="modalAge" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
@@ -4143,6 +4181,580 @@ chapAdd('ks',null,[
 ]);
 </script>
 <script>
+/* =====================================================================
+   ENGLISH LANGUAGE ARTS — strand-by-strand skills
+   Phonemic awareness -> decoding -> word structure -> parts of speech
+   -> sentences -> comprehension. Every question carries a `why`
+   explanation, shown when the child answers wrongly.
+   ===================================================================== */
+
+/* ---------------- PHONEMIC AWARENESS & DECODING ---------------- */
+chapAdd('en','en_abc4',[
+ {id:'en_sounds',title:'Ch: Beginning & Ending Sounds',sub:'First sound · last sound',emoji:'👂',sticker:'👂',a:[5,6],
+  slides:[
+   {t:'intro',emoji:'👂',title:'Listen Closely',text:'Every word has a FIRST sound and a LAST sound. Say the word slowly!',say:'Every word has a first sound and a last sound. Say the word slowly.',lang:'en-US'},
+   {t:'soundboard',title:'What is the FIRST sound?',hint:'Tap and stretch the first sound: sssun!',lang:'en-US',items:[
+     {e:'☀️',l:'sun — /s/',say:'Sssun. The first sound is /s/.'},
+     {e:'🐶',l:'dog — /d/',say:'Dddog. The first sound is /d/.'},
+     {e:'🐟',l:'fish — /f/',say:'Fffish. The first sound is /f/.'},
+     {e:'🎩',l:'hat — /h/',say:'Hhhat. The first sound is /h/.'}]},
+   {t:'soundboard',title:'What is the LAST sound?',hint:'Tap and hold the ending: caT!',lang:'en-US',items:[
+     {e:'🐱',l:'cat — /t/',say:'Cat. The last sound is /t/.'},
+     {e:'🛏️',l:'bed — /d/',say:'Bed. The last sound is /d/.'},
+     {e:'🐷',l:'pig — /g/',say:'Pig. The last sound is /g/.'},
+     {e:'🚌',l:'bus — /s/',say:'Bus. The last sound is /s/.'}]},
+   {t:'practice',title:'Your turn',q:'Which word begins with /m/?',say:'Which word begins with the sound m?',lang:'en-US',
+    opts:[{e:'🌙',l:'moon',ok:1},{e:'🐶',l:'dog'},{e:'☀️',l:'sun'}]},
+   {t:'match',title:'Match the first sound',hint:'Drag the picture to its first sound.',lang:'en-US',pairs:[
+     {e:'☀️',k:'/s/'},{e:'🐶',k:'/d/'},{e:'🐟',k:'/f/'}]}
+  ],
+  quiz:[
+   {q:'Which word BEGINS with /m/?',big:'👂',say:'Which word begins with the sound m?',lang:'en-US',
+    opts:[{e:'🌙',l:'moon',ok:1},{e:'🐶',l:'dog'},{e:'☀️',l:'sun'}],why:'Moon starts with the /m/ sound: mmm-oon.'},
+   {q:'Which word BEGINS with /f/?',big:'👂',say:'Which word begins with the sound f?',lang:'en-US',
+    opts:[{e:'🐟',l:'fish',ok:1},{e:'🎩',l:'hat'},{e:'🐱',l:'cat'}],why:'Fish starts with /f/: fff-ish.'},
+   {q:'What is the LAST sound in "cat"?',big:'🐱',say:'What is the last sound in cat?',lang:'en-US',
+    opts:[{g:'/t/',ok:1},{g:'/c/'},{g:'/a/'}],why:'Say it slowly: c–a–t. The last sound you hear is /t/.'},
+   {q:'What is the LAST sound in "bus"?',big:'🚌',say:'What is the last sound in bus?',lang:'en-US',
+    opts:[{g:'/s/',ok:1},{g:'/b/'},{g:'/u/'}],why:'Say it slowly: b–u–s. The last sound is /s/.'},
+   {q:'"Hat" and "house" both begin with…',big:'🎩',say:'Hat and house both begin with which sound?',lang:'en-US',
+    opts:[{g:'/h/',ok:1},{g:'/t/'},{g:'/s/'}],why:'Both words start the same way: hhh-at, hhh-ouse.'}
+  ]},
+
+ {id:'en_cvc',title:'Ch: Short Vowels & Word Families',sub:'-at · -ig · -op · -un',emoji:'🐱',sticker:'🔤',a:[5,6],
+  slides:[
+   {t:'intro',emoji:'🔤',title:'Word Families',text:'Change the first letter and you get a new word: cat, bat, hat!',say:'Change the first letter and you get a new word. Cat, bat, hat.',lang:'en-US'},
+   {t:'wordbuild',title:'Build the word',hint:'Tap the letters in order.',items:[
+     {w:'CAT',parts:['C','AT'],e:'🐱'},{w:'BAT',parts:['B','AT'],e:'🦇'}]},
+   {t:'wordbuild',title:'Build the word',hint:'Tap the letters in order.',items:[
+     {w:'PIG',parts:['P','IG'],e:'🐷'},{w:'SUN',parts:['S','UN'],e:'☀️'}]},
+   {t:'flipcards',title:'The -at family',hint:'Tap a card to hear the word.',lang:'en-US',cards:[
+     {f:'cat',b:'🐱',say:'cat'},{f:'bat',b:'🦇',say:'bat'},{f:'hat',b:'🎩',say:'hat'},
+     {f:'mat',b:'🧶',say:'mat'},{f:'rat',b:'🐀',say:'rat'},{f:'sat',b:'🪑',say:'sat'}]},
+   {t:'practice',title:'Your turn',q:'b + at = ?',say:'B plus at makes what word?',lang:'en-US',
+    opts:[{g:'bat',ok:1},{g:'tab'},{g:'cat'}]}
+  ],
+  quiz:[
+   {q:'c + at = ?',big:'🐱',say:'C plus at makes what word?',lang:'en-US',
+    opts:[{g:'cat',ok:1},{g:'act'},{g:'tac'}],why:'Blend the sounds in order: /c/ + /at/ = cat.'},
+   {q:'Which word is in the -ig family?',big:'🐷',say:'Which word is in the ig family?',lang:'en-US',
+    opts:[{g:'pig',ok:1},{g:'pug'},{g:'peg'}],why:'Words in the -ig family end with the same -ig sound: pig, big, dig.'},
+   {q:'Which word rhymes with "sun"?',big:'☀️',say:'Which word rhymes with sun?',lang:'en-US',
+    opts:[{g:'run',ok:1},{g:'sit'},{g:'sand'}],why:'Sun and run both end with the -un sound, so they rhyme.'},
+   {q:'The short vowel in "pig" is…',big:'🐷',say:'What is the short vowel sound in pig?',lang:'en-US',
+    opts:[{g:'i',ok:1},{g:'e'},{g:'a'}],why:'Pig has the short /i/ sound in the middle: p–i–g.'},
+   {q:'Change the "c" in cat to "h". You get…',big:'🎩',say:'Change the c in cat to h. What word do you get?',lang:'en-US',
+    opts:[{g:'hat',ok:1},{g:'hit'},{g:'cut'}],why:'Keep the -at ending and swap the first letter: h + at = hat.'}
+  ]},
+
+ {id:'en_cats',title:'Ch: Sorting Words into Groups',sub:'Animals · food · clothes',emoji:'🧺',sticker:'🧺',a:[5,6],
+  slides:[
+   {t:'intro',emoji:'🧺',title:'Words Belong in Groups',text:'An apple and a banana are both FOOD. A cat and a dog are both ANIMALS.',say:'An apple and a banana are both food. A cat and a dog are both animals.',lang:'en-US'},
+   {t:'soundboard',title:'Groups of words',hint:'Tap to hear each group.',lang:'en-US',items:[
+     {e:'🐶',l:'Animals',say:'Animals. Dog, cat, bird, fish.'},
+     {e:'🍎',l:'Food',say:'Food. Apple, rice, bread, milk.'},
+     {e:'👕',l:'Clothes',say:'Clothes. Shirt, shoes, hat, socks.'},
+     {e:'🚗',l:'Vehicles',say:'Vehicles. Car, bus, bike, boat.'}]},
+   {t:'match',title:'Sort them out',hint:'Drag each word into its group.',lang:'en-US',pairs:[
+     {e:'🐦',k:'Animals'},{e:'🍌',k:'Food'},{e:'🐟',k:'Animals'},{e:'🍞',k:'Food'}]},
+   {t:'practice',title:'Your turn',q:'Which one is NOT an animal?',say:'Which one is not an animal?',lang:'en-US',
+    opts:[{e:'🚗',l:'car',ok:1},{e:'🐶',l:'dog'},{e:'🐦',l:'bird'}]},
+   {t:'match',title:'Sort them out',hint:'Drag each word into its group.',lang:'en-US',pairs:[
+     {e:'👟',k:'Clothes'},{e:'🚌',k:'Vehicles'},{e:'🧦',k:'Clothes'}]}
+  ],
+  quiz:[
+   {q:'Which one is NOT an animal?',big:'🧺',say:'Which one is not an animal?',lang:'en-US',
+    opts:[{e:'🚗',l:'car',ok:1},{e:'🐶',l:'dog'},{e:'🐦',l:'bird'}],why:'A car is a vehicle. Dogs and birds are animals.'},
+   {q:'Apple, rice and bread are all…',big:'🍎',say:'Apple, rice and bread are all what?',lang:'en-US',
+    opts:[{g:'food',ok:1},{g:'clothes'},{g:'animals'}],why:'They are all things we eat, so they belong to the group "food".'},
+   {q:'Which one belongs with shirt and socks?',big:'👕',say:'Which one belongs with shirt and socks?',lang:'en-US',
+    opts:[{e:'👟',l:'shoes',ok:1},{e:'🍌',l:'banana'},{e:'🚌',l:'bus'}],why:'Shirt, socks and shoes are all clothes we wear.'},
+   {q:'Car, bus and boat are all…',big:'🚗',say:'Car, bus and boat are all what?',lang:'en-US',
+    opts:[{g:'vehicles',ok:1},{g:'food'},{g:'animals'}],why:'They all carry people from place to place, so they are vehicles.'},
+   {q:'Which one does NOT belong: cat, dog, bread, bird?',big:'🤔',say:'Which one does not belong? Cat, dog, bread, bird.',lang:'en-US',
+    opts:[{g:'bread',ok:1},{g:'cat'},{g:'bird'}],why:'Cat, dog and bird are animals. Bread is food, so it does not belong.'}
+  ]},
+
+ {id:'en_syll',title:'Ch: Syllables — Clap the Beats',sub:'1, 2 or 3 beats',emoji:'👏',sticker:'👏',a:[6,7],
+  slides:[
+   {t:'intro',emoji:'👏',title:'Clap the Beats',text:'Every word has beats. Clap as you say it: cat = 1, rab-bit = 2!',say:'Every word has beats. Clap as you say it. Cat is one. Rab bit is two.',lang:'en-US'},
+   {t:'soundboard',title:'Clap along',hint:'Tap, listen, and clap the beats!',lang:'en-US',items:[
+     {e:'🐱',l:'cat — 1 beat',say:'Cat. One beat.'},
+     {e:'🐰',l:'rab-bit — 2 beats',say:'Rab bit. Two beats.'},
+     {e:'🦋',l:'but-ter-fly — 3 beats',say:'But ter fly. Three beats.'},
+     {e:'🍌',l:'ba-na-na — 3 beats',say:'Ba na na. Three beats.'}]},
+   {t:'count',n:2,emoji:'👏',label:'beats in "rab-bit"',say:'Rab bit has two beats.'},
+   {t:'practice',title:'Your turn',q:'How many beats in "el-e-phant"?',say:'How many beats in elephant?',lang:'en-US',
+    opts:[{g:'3',ok:1},{g:'2'},{g:'1'}]},
+   {t:'match',title:'Match word to beats',hint:'Drag each word to its number of beats.',lang:'en-US',pairs:[
+     {e:'🐱',k:'1 beat'},{e:'🐰',k:'2 beats'},{e:'🦋',k:'3 beats'}]}
+  ],
+  quiz:[
+   {q:'How many beats in "cat"?',big:'🐱',say:'How many beats in cat?',lang:'en-US',
+    opts:[{g:'1',ok:1},{g:'2'},{g:'3'}],why:'Cat is said in one clap: cat.'},
+   {q:'How many beats in "rab-bit"?',big:'🐰',say:'How many beats in rabbit?',lang:'en-US',
+    opts:[{g:'2',ok:1},{g:'1'},{g:'3'}],why:'Clap it: rab (1) – bit (2). That is two beats.'},
+   {q:'How many beats in "but-ter-fly"?',big:'🦋',say:'How many beats in butterfly?',lang:'en-US',
+    opts:[{g:'3',ok:1},{g:'2'},{g:'4'}],why:'Clap it: but (1) – ter (2) – fly (3).'},
+   {q:'Which word has the MOST beats?',big:'👏',say:'Which word has the most beats?',lang:'en-US',
+    opts:[{g:'banana',ok:1},{g:'dog'},{g:'tiger'}],why:'Ba–na–na has 3 beats. Dog has 1 and ti–ger has 2.'},
+   {q:'Which word has only ONE beat?',big:'👏',say:'Which word has only one beat?',lang:'en-US',
+    opts:[{g:'fish',ok:1},{g:'monkey'},{g:'crocodile'}],why:'Fish is one clap. Mon–key is 2 and croc–o–dile is 3.'}
+  ]}
+]);
+
+/* ---------------- WORD STRUCTURE & PARTS OF SPEECH ---------------- */
+chapAdd('en',null,[
+ {id:'en_abcorder',title:'T1: ABC Order',sub:'Put words in alphabetical order',emoji:'🔡',sticker:'🔠',a:[6,7],
+  slides:[
+   {t:'intro',emoji:'🔡',title:'ABC Order',text:'We put words in order using the alphabet — a comes before b, b before c.',say:'We put words in order using the alphabet. A comes before b, and b comes before c.',lang:'en-US'},
+   {t:'sequence',title:'Put the letters in order',hint:'Tap them in ABC order.',steps:[
+     {e:'🅰️',l:'a'},{e:'🅱️',l:'b'},{e:'🇨',l:'c'},{e:'🇩',l:'d'}],say:'Put the letters in alphabet order.',lang:'en-US'},
+   {t:'sequence',title:'Put the words in ABC order',hint:'Look at the FIRST letter of each word.',steps:[
+     {e:'🍎',l:'apple'},{e:'🐻',l:'bear'},{e:'🐱',l:'cat'},{e:'🐶',l:'dog'}],say:'Put the words in alphabet order.',lang:'en-US'},
+   {t:'practice',title:'Your turn',q:'Which comes FIRST in ABC order?',say:'Which word comes first in alphabet order?',lang:'en-US',
+    opts:[{g:'ant',ok:1},{g:'fish'},{g:'zebra'}]},
+   {t:'sequence',title:'Put the words in ABC order',hint:'Look at the FIRST letter of each word.',steps:[
+     {e:'🐟',l:'fish'},{e:'🐐',l:'goat'},{e:'🎩',l:'hat'}],say:'Put these words in alphabet order.',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'Which letter comes AFTER "c"?',big:'🔡',say:'Which letter comes after c?',lang:'en-US',
+    opts:[{g:'d',ok:1},{g:'b'},{g:'e'}],why:'The alphabet goes a, b, c, d — so d comes right after c.'},
+   {q:'Which word comes FIRST in ABC order?',big:'🔠',say:'Which word comes first in alphabet order?',lang:'en-US',
+    opts:[{g:'ant',ok:1},{g:'fish'},{g:'zebra'}],why:'Ant starts with "a", which is the very first letter of the alphabet.'},
+   {q:'Which word comes LAST in ABC order?',big:'🔠',say:'Which word comes last in alphabet order?',lang:'en-US',
+    opts:[{g:'zebra',ok:1},{g:'ant'},{g:'monkey'}],why:'Zebra starts with "z", the last letter of the alphabet.'},
+   {q:'ABC order: cat, ___, dog',big:'🔡',say:'In alphabet order, what goes between cat and dog?',lang:'en-US',
+    opts:[{g:'cow',ok:1},{g:'egg'},{g:'ant'}],why:'Cat and cow both start with "c", and "ca" comes before "co". Then dog follows.'},
+   {q:'Which pair is in the RIGHT ABC order?',big:'✅',say:'Which pair is in the correct alphabet order?',lang:'en-US',
+    opts:[{g:'bear, cat',ok:1},{g:'cat, bear'}],why:'"b" comes before "c" in the alphabet, so bear comes before cat.'}
+  ]},
+ {id:'en_nouns',title:'T1: Nouns — Naming Words',sub:'Person · place · thing',emoji:'🏷️',sticker:'🏷️',a:[6,7],
+  slides:[
+   {t:'intro',emoji:'🏷️',title:'Nouns',text:'A noun names a PERSON, a PLACE or a THING.',say:'A noun names a person, a place, or a thing.',lang:'en-US'},
+   {t:'soundboard',title:'Three kinds of nouns',hint:'Tap to hear examples.',lang:'en-US',items:[
+     {e:'👩‍🏫',l:'Person — teacher',say:'Person. Teacher, doctor, mother, friend.'},
+     {e:'🏫',l:'Place — school',say:'Place. School, park, shop, home.'},
+     {e:'⚽',l:'Thing — ball',say:'Thing. Ball, book, chair, cup.'},
+     {e:'🐱',l:'Animal — cat',say:'Animals are nouns too. Cat, dog, bird.'}]},
+   {t:'match',title:'Sort the nouns',hint:'Drag each noun to its kind.',lang:'en-US',pairs:[
+     {e:'👩‍⚕️',k:'Person'},{e:'🏞️',k:'Place'},{e:'📕',k:'Thing'},{e:'👮',k:'Person'}]},
+   {t:'practice',title:'Your turn',q:'Which word is a NOUN?',say:'Which word is a noun?',lang:'en-US',
+    opts:[{g:'school',ok:1},{g:'run'},{g:'happy'}]},
+   {t:'sentence',title:'Build the sentence',hint:'Tap the words in the right order.',emoji:'🏫',
+    words:['The','teacher','is','at','school'],say:'The teacher is at school',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'Which word is a NOUN?',big:'🏷️',say:'Which word is a noun?',lang:'en-US',
+    opts:[{g:'school',ok:1},{g:'run'},{g:'happy'}],why:'School is a place, and nouns name people, places and things. "Run" is an action and "happy" describes.'},
+   {q:'"Teacher" is a noun that names a…',big:'👩‍🏫',say:'Teacher is a noun that names what?',lang:'en-US',
+    opts:[{g:'person',ok:1},{g:'place'},{g:'thing'}],why:'A teacher is a person, so it is a person noun.'},
+   {q:'"Park" is a noun that names a…',big:'🏞️',say:'Park is a noun that names what?',lang:'en-US',
+    opts:[{g:'place',ok:1},{g:'person'},{g:'thing'}],why:'A park is somewhere you go, so it names a place.'},
+   {q:'Which one is a THING?',big:'⚽',say:'Which one is a thing?',lang:'en-US',
+    opts:[{e:'📕',l:'book',ok:1},{e:'👮',l:'police officer'},{e:'🏫',l:'school'}],why:'A book is an object you can hold, so it is a thing.'},
+   {q:'How many nouns: "The dog ran to the park."',big:'🐶',say:'How many nouns are in the sentence? The dog ran to the park.',lang:'en-US',
+    opts:[{g:'2',ok:1},{g:'1'},{g:'3'}],why:'The nouns are "dog" (animal) and "park" (place). "Ran" is an action word.'}
+  ]},
+ {id:'en_adj',title:'T1: Adjectives — Describing Words',sub:'big, red, happy, soft',emoji:'🎨',sticker:'🌈',a:[6,7],
+  slides:[
+   {t:'intro',emoji:'🎨',title:'Describing Words',text:'An adjective tells us MORE about a noun: a BIG dog, a RED ball.',say:'An adjective tells us more about a noun. A big dog. A red ball.',lang:'en-US'},
+   {t:'soundboard',title:'What kind of describing word?',hint:'Tap to hear each kind.',lang:'en-US',items:[
+     {e:'📏',l:'Size — big, small',say:'Size words. Big, small, tall, short.'},
+     {e:'🌈',l:'Colour — red, blue',say:'Colour words. Red, blue, green, yellow.'},
+     {e:'😀',l:'Feeling — happy, sad',say:'Feeling words. Happy, sad, tired, excited.'},
+     {e:'🧸',l:'Touch — soft, hard',say:'Touch words. Soft, hard, smooth, rough.'}]},
+   {t:'practice',title:'Your turn',q:'The ___ elephant. Which word fits?',say:'The what elephant? Which describing word fits?',lang:'en-US',
+    opts:[{g:'big',ok:1},{g:'run'},{g:'school'}]},
+   {t:'sentence',title:'Build the sentence',hint:'Tap the words in the right order.',emoji:'🐶',
+    words:['I','have','a','small','dog'],say:'I have a small dog',lang:'en-US'},
+   {t:'match',title:'Match noun & adjective',hint:'Drag the describing word to the picture.',lang:'en-US',pairs:[
+     {e:'🐘',k:'big'},{e:'🐜',k:'small'},{e:'🧸',k:'soft'}]}
+  ],
+  quiz:[
+   {q:'Which word is an ADJECTIVE?',big:'🎨',say:'Which word is an adjective?',lang:'en-US',
+    opts:[{g:'soft',ok:1},{g:'jump'},{g:'table'}],why:'Soft describes how something feels. "Jump" is an action and "table" is a noun.'},
+   {q:'The ___ elephant is grey.',big:'🐘',say:'The what elephant is grey?',lang:'en-US',
+    opts:[{g:'big',ok:1},{g:'run'},{g:'school'}],why:'Big describes the elephant, so it is the adjective that fits.'},
+   {q:'In "a red ball", which word describes?',big:'🔴',say:'In a red ball, which word is the describing word?',lang:'en-US',
+    opts:[{g:'red',ok:1},{g:'ball'},{g:'a'}],why:'Red tells us the colour of the ball, so red is the adjective.'},
+   {q:'Which adjective describes a FEELING?',big:'😀',say:'Which adjective describes a feeling?',lang:'en-US',
+    opts:[{g:'happy',ok:1},{g:'blue'},{g:'tall'}],why:'Happy tells how someone feels. Blue is a colour and tall is a size.'},
+   {q:'A kitten feels…',big:'🐈',say:'A kitten feels how?',lang:'en-US',
+    opts:[{g:'soft',ok:1},{g:'loud'},{g:'square'}],why:'Soft is a touch word, and that is how a kitten feels when you stroke it.'}
+  ]},
+ {id:'en_verbs',title:'T1: Verbs — Now & Before',sub:'run/ran · eat/ate',emoji:'🏃',sticker:'⏳',a:[7],
+  slides:[
+   {t:'intro',emoji:'🏃',title:'Action Words Change',text:'A verb is an action. It changes for things that already happened: today I run, yesterday I ran.',say:'A verb is an action. It changes for things that already happened. Today I run. Yesterday I ran.',lang:'en-US'},
+   {t:'soundboard',title:'Now → Before',hint:'Tap to hear both forms.',lang:'en-US',items:[
+     {e:'🏃',l:'run → ran',say:'Today I run. Yesterday I ran.'},
+     {e:'🍽️',l:'eat → ate',say:'Today I eat. Yesterday I ate.'},
+     {e:'😴',l:'sleep → slept',say:'Today I sleep. Last night I slept.'},
+     {e:'📖',l:'read → read',say:'Today I read. Yesterday I read. The spelling stays the same.'}]},
+   {t:'soundboard',title:'Add -ed for many verbs',hint:'Tap to hear the pattern.',lang:'en-US',items:[
+     {e:'🎣',l:'play → played',say:'Play becomes played.'},
+     {e:'🚶',l:'walk → walked',say:'Walk becomes walked.'},
+     {e:'🙋',l:'want → wanted',say:'Want becomes wanted.'},
+     {e:'🧹',l:'help → helped',say:'Help becomes helped.'}]},
+   {t:'practice',title:'Your turn',q:'Yesterday I ___ to school. (walk)',say:'Yesterday I what to school?',lang:'en-US',
+    opts:[{g:'walked',ok:1},{g:'walk'},{g:'walking'}]},
+   {t:'sentence',title:'Build the sentence',hint:'Tap the words in the right order.',emoji:'🍚',
+    words:['Yesterday','I','ate','rice'],say:'Yesterday I ate rice',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'Yesterday I ___ to school. (walk)',big:'🚶',say:'Yesterday I what to school?',lang:'en-US',
+    opts:[{g:'walked',ok:1},{g:'walk'},{g:'walking'}],why:'Yesterday already happened, so we add -ed: walk becomes walked.'},
+   {q:'Today I run. Yesterday I ___',big:'🏃',say:'Today I run. Yesterday I what?',lang:'en-US',
+    opts:[{g:'ran',ok:1},{g:'runned'},{g:'running'}],why:'Run is special — it changes to "ran" instead of adding -ed.'},
+   {q:'Last night I ___ early. (sleep)',big:'😴',say:'Last night I what early?',lang:'en-US',
+    opts:[{g:'slept',ok:1},{g:'sleeped'},{g:'sleep'}],why:'Sleep is special too: it becomes "slept", not "sleeped".'},
+   {q:'Which word is a VERB?',big:'🏃',say:'Which word is a verb?',lang:'en-US',
+    opts:[{g:'jump',ok:1},{g:'chair'},{g:'blue'}],why:'Jump is something you DO, so it is a verb. Chair is a noun, blue is an adjective.'},
+   {q:'She ___ her homework. (finish)',big:'📝',say:'She what her homework?',lang:'en-US',
+    opts:[{g:'finished',ok:1},{g:'finish'},{g:'finishing'}],why:'The action is already done, so add -ed: finish becomes finished.'}
+  ]},
+ {id:'en_longvowel',title:'T1: Long Vowels & Silent e',sub:'cap → cape · kit → kite',emoji:'🪁',sticker:'🪄',a:[7],
+  slides:[
+   {t:'intro',emoji:'🪄',title:'The Magic e',text:'Add an e at the end and the vowel says its NAME: cap becomes cape!',say:'Add an e at the end and the vowel says its name. Cap becomes cape.',lang:'en-US'},
+   {t:'soundboard',title:'Magic e in action',hint:'Tap to hear both words.',lang:'en-US',items:[
+     {e:'🧢',l:'cap → cape',say:'Cap. Add e. Cape.'},
+     {e:'🪁',l:'kit → kite',say:'Kit. Add e. Kite.'},
+     {e:'🎩',l:'hat → hate',say:'Hat. Add e. Hate.'},
+     {e:'🌷',l:'tub → tube',say:'Tub. Add e. Tube.'}]},
+   {t:'practice',title:'Your turn',q:'Add e to "pin". You get…',say:'Add e to pin. What word do you get?',lang:'en-US',
+    opts:[{g:'pine',ok:1},{g:'pen'},{g:'pan'}]},
+   {t:'flipcards',title:'Long vowel words',hint:'Tap a card to hear the word.',lang:'en-US',cards:[
+     {f:'cake',b:'🎂',say:'cake'},{f:'bike',b:'🚲',say:'bike'},{f:'nose',b:'👃',say:'nose'},
+     {f:'cube',b:'🧊',say:'cube'},{f:'rope',b:'🪢',say:'rope'},{f:'game',b:'🎲',say:'game'}]},
+   {t:'practice',title:'Your turn',q:'Which word has a LONG vowel?',say:'Which word has a long vowel sound?',lang:'en-US',
+    opts:[{g:'cake',ok:1},{g:'cat'},{g:'cup'}]}
+  ],
+  quiz:[
+   {q:'Add e to "cap". You get…',big:'🧢',say:'Add e to cap. What word do you get?',lang:'en-US',
+    opts:[{g:'cape',ok:1},{g:'cup'},{g:'cop'}],why:'The silent e makes the "a" say its name: cap becomes cape.'},
+   {q:'Add e to "kit". You get…',big:'🪁',say:'Add e to kit. What word do you get?',lang:'en-US',
+    opts:[{g:'kite',ok:1},{g:'kat'},{g:'kut'}],why:'The silent e makes the "i" say its name: kit becomes kite.'},
+   {q:'Which word has a LONG vowel?',big:'🎂',say:'Which word has a long vowel sound?',lang:'en-US',
+    opts:[{g:'cake',ok:1},{g:'cat'},{g:'cup'}],why:'In cake, the magic e makes the "a" say its own name. Cat and cup have short vowels.'},
+   {q:'The "e" at the end of "bike" is…',big:'🚲',say:'The e at the end of bike is what?',lang:'en-US',
+    opts:[{g:'silent',ok:1},{g:'loud'}],why:'We do not say the final e — it just changes the vowel before it. That is why it is called silent e.'},
+   {q:'Which word does NOT have silent e?',big:'❓',say:'Which word does not have a silent e?',lang:'en-US',
+    opts:[{g:'sun',ok:1},{g:'nose'},{g:'rope'}],why:'Sun has no e at the end. Nose and rope both end with silent e.'}
+  ]},
+ {id:'en_compound',title:'T1: Compound Words',sub:'sun + flower = sunflower',emoji:'🌻',sticker:'🌻',a:[7],
+  slides:[
+   {t:'intro',emoji:'🌻',title:'Two Words, One Word',text:'Join two small words to make a big one: sun + flower = sunflower!',say:'Join two small words to make a big one. Sun plus flower makes sunflower.',lang:'en-US'},
+   {t:'wordbuild',title:'Join the words',hint:'Tap the parts in order.',items:[
+     {w:'SUNFLOWER',parts:['SUN','FLOWER'],e:'🌻'},{w:'RAINBOW',parts:['RAIN','BOW'],e:'🌈'}]},
+   {t:'wordbuild',title:'Join the words',hint:'Tap the parts in order.',items:[
+     {w:'FOOTBALL',parts:['FOOT','BALL'],e:'⚽'},{w:'TOOTHBRUSH',parts:['TOOTH','BRUSH'],e:'🪥'}]},
+   {t:'soundboard',title:'More compound words',hint:'Tap to hear the two parts.',lang:'en-US',items:[
+     {e:'🦋',l:'butter + fly',say:'Butter plus fly makes butterfly.'},
+     {e:'🏫',l:'class + room',say:'Class plus room makes classroom.'},
+     {e:'🎂',l:'birth + day',say:'Birth plus day makes birthday.'},
+     {e:'⭐',l:'star + fish',say:'Star plus fish makes starfish.'}]},
+   {t:'practice',title:'Your turn',q:'rain + bow = ?',say:'Rain plus bow makes what word?',lang:'en-US',
+    opts:[{g:'rainbow',ok:1},{g:'bowrain'},{g:'rainy'}]}
+  ],
+  quiz:[
+   {q:'sun + flower = ?',big:'🌻',say:'Sun plus flower makes what word?',lang:'en-US',
+    opts:[{g:'sunflower',ok:1},{g:'flowersun'},{g:'sunny'}],why:'In a compound word the first word comes first: sun + flower = sunflower.'},
+   {q:'foot + ball = ?',big:'⚽',say:'Foot plus ball makes what word?',lang:'en-US',
+    opts:[{g:'football',ok:1},{g:'ballfoot'}],why:'Join them in order with no gap: football.'},
+   {q:'Which is a COMPOUND word?',big:'🌈',say:'Which one is a compound word?',lang:'en-US',
+    opts:[{g:'rainbow',ok:1},{g:'rabbit'},{g:'yellow'}],why:'Rainbow is made of two words, rain and bow. Rabbit and yellow are single words.'},
+   {q:'"Toothbrush" is made from…',big:'🪥',say:'Toothbrush is made from which two words?',lang:'en-US',
+    opts:[{g:'tooth + brush',ok:1},{g:'too + brush'},{g:'tooth + rush'}],why:'Split it into two real words you know: tooth and brush.'},
+   {q:'star + fish = ?',big:'⭐',say:'Star plus fish makes what word?',lang:'en-US',
+    opts:[{g:'starfish',ok:1},{g:'fishstar'}],why:'The first word stays first: starfish.'}
+  ]}
+]);
+
+/* ---------------- SENTENCES, VOCABULARY & COMPREHENSION ---------------- */
+chapAdd('en',null,[
+ {id:'en_sentence',title:'T1: Sentence Basics',sub:'Capital letter · full stop · ?',emoji:'✏️',sticker:'✏️',a:[7],
+  slides:[
+   {t:'intro',emoji:'✏️',title:'A Good Sentence',text:'Start with a CAPITAL letter. End with a full stop (.) or a question mark (?).',say:'Start with a capital letter. End with a full stop or a question mark.',lang:'en-US'},
+   {t:'soundboard',title:'End marks',hint:'Tap to hear when to use each one.',lang:'en-US',items:[
+     {e:'🔴',l:'. full stop',say:'A full stop ends a telling sentence. I like rice.'},
+     {e:'❓',l:'? question mark',say:'A question mark ends a question. Do you like rice?'},
+     {e:'❗',l:'! exclamation mark',say:'An exclamation mark shows strong feeling. Watch out!'},
+     {e:'🔠',l:'Capital letter',say:'Every sentence begins with a capital letter.'}]},
+   {t:'practice',title:'Your turn',q:'Which sentence is written correctly?',say:'Which sentence is written correctly?',lang:'en-US',
+    opts:[{g:'I like rice.',ok:1},{g:'i like rice'}]},
+   {t:'practice',title:'Your turn',q:'"Where is my bag" needs which mark?',say:'Where is my bag needs which mark?',lang:'en-US',
+    opts:[{g:'?',ok:1},{g:'.'},{g:'!'}]},
+   {t:'sentence',title:'Build the sentence',hint:'Tap the words in the right order.',emoji:'📕',
+    words:['My','sister','reads','a','book'],say:'My sister reads a book',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'Which sentence is correct?',big:'✏️',say:'Which sentence is written correctly?',lang:'en-US',
+    opts:[{g:'I like rice.',ok:1},{g:'i like rice'}],why:'It starts with a capital "I" and ends with a full stop.'},
+   {q:'"Where is my bag" needs…',big:'❓',say:'Where is my bag needs which mark?',lang:'en-US',
+    opts:[{g:'?',ok:1},{g:'.'},{g:'!'}],why:'It is asking something, so it needs a question mark.'},
+   {q:'Every sentence starts with a…',big:'🔠',say:'Every sentence starts with what?',lang:'en-US',
+    opts:[{g:'capital letter',ok:1},{g:'small letter'}],why:'The first letter of a sentence is always a capital.'},
+   {q:'Which one is a full sentence?',big:'📝',say:'Which one is a full sentence?',lang:'en-US',
+    opts:[{g:'The dog barked.',ok:1},{g:'the big dog'}],why:'A sentence needs someone and an action. "The dog barked" tells us what the dog did.'},
+   {q:'"Watch out" shows strong feeling, so use…',big:'❗',say:'Watch out shows strong feeling, so use which mark?',lang:'en-US',
+    opts:[{g:'!',ok:1},{g:'.'},{g:'?'}],why:'An exclamation mark shows excitement, surprise or warning.'}
+  ]},
+ {id:'en_question',title:'T1: Question Words',sub:'who · what · where · when',emoji:'❓',sticker:'🔍',a:[7],
+  slides:[
+   {t:'intro',emoji:'❓',title:'Asking Questions',text:'Who asks about a person. What asks about a thing. Where asks about a place. When asks about time.',say:'Who asks about a person. What asks about a thing. Where asks about a place. When asks about time.',lang:'en-US'},
+   {t:'soundboard',title:'Question words',hint:'Tap to hear an example of each.',lang:'en-US',items:[
+     {e:'🙋',l:'Who — person',say:'Who is that? That is my teacher.'},
+     {e:'📦',l:'What — thing',say:'What is in the box? A ball.'},
+     {e:'📍',l:'Where — place',say:'Where is the cat? Under the bed.'},
+     {e:'⏰',l:'When — time',say:'When do you sleep? At nine o clock.'}]},
+   {t:'practice',title:'Your turn',q:'___ is your teacher?',say:'What word starts this question about a person?',lang:'en-US',
+    opts:[{g:'Who',ok:1},{g:'Where'},{g:'When'}]},
+   {t:'practice',title:'Your turn',q:'___ do you eat lunch?',say:'What word starts this question about time?',lang:'en-US',
+    opts:[{g:'When',ok:1},{g:'Who'},{g:'What'}]},
+   {t:'match',title:'Match question to answer',hint:'Drag the answer to the question word.',lang:'en-US',pairs:[
+     {e:'👩‍🏫',k:'Who?'},{e:'🏫',k:'Where?'},{e:'⏰',k:'When?'}]}
+  ],
+  quiz:[
+   {q:'___ is your teacher?',big:'🙋',say:'Which word asks about a person?',lang:'en-US',
+    opts:[{g:'Who',ok:1},{g:'Where'},{g:'When'}],why:'"Who" always asks about a person.'},
+   {q:'___ is my bag?',big:'📍',say:'Which word asks about a place?',lang:'en-US',
+    opts:[{g:'Where',ok:1},{g:'Who'},{g:'What'}],why:'"Where" asks about a place or position.'},
+   {q:'___ do you sleep?',big:'⏰',say:'Which word asks about time?',lang:'en-US',
+    opts:[{g:'When',ok:1},{g:'What'},{g:'Who'}],why:'"When" asks about time — what o’clock or what day.'},
+   {q:'___ is in the box?',big:'📦',say:'Which word asks about a thing?',lang:'en-US',
+    opts:[{g:'What',ok:1},{g:'Who'},{g:'When'}],why:'"What" asks about a thing or an object.'},
+   {q:'Answer: "At the park." The question was…',big:'🏞️',say:'The answer is at the park. What was the question word?',lang:'en-US',
+    opts:[{g:'Where?',ok:1},{g:'Who?'},{g:'When?'}],why:'"At the park" names a place, so the question must have started with Where.'}
+  ]},
+ {id:'en_synonym',title:'T1: Words That Mean the Same',sub:'big = large · happy = glad',emoji:'🟰',sticker:'🟰',a:[7],
+  slides:[
+   {t:'intro',emoji:'🟰',title:'Same Meaning',text:'Some different words mean almost the same thing: big and large.',say:'Some different words mean almost the same thing. Big and large.',lang:'en-US'},
+   {t:'soundboard',title:'Words that mean the same',hint:'Tap to hear each pair.',lang:'en-US',items:[
+     {e:'🐘',l:'big = large',say:'Big and large mean the same.'},
+     {e:'😀',l:'happy = glad',say:'Happy and glad mean the same.'},
+     {e:'🏃',l:'fast = quick',say:'Fast and quick mean the same.'},
+     {e:'🤫',l:'quiet = silent',say:'Quiet and silent mean the same.'}]},
+   {t:'soundboard',title:'Strong and stronger',hint:'Some words mean MORE than others.',lang:'en-US',items:[
+     {e:'🙂',l:'happy → delighted',say:'Delighted means very happy.'},
+     {e:'🥶',l:'cool → freezing',say:'Freezing means very cold.'},
+     {e:'🌧️',l:'damp → soaked',say:'Soaked means very wet.'},
+     {e:'😋',l:'nice → delicious',say:'Delicious means very tasty.'}]},
+   {t:'practice',title:'Your turn',q:'Which word means the same as "big"?',say:'Which word means the same as big?',lang:'en-US',
+    opts:[{g:'large',ok:1},{g:'small'},{g:'loud'}]},
+   {t:'match',title:'Match the pairs',hint:'Drag each word to its partner.',lang:'en-US',pairs:[
+     {e:'glad',k:'happy'},{e:'quick',k:'fast'},{e:'silent',k:'quiet'}]}
+  ],
+  quiz:[
+   {q:'Which means the same as "big"?',big:'🐘',say:'Which word means the same as big?',lang:'en-US',
+    opts:[{g:'large',ok:1},{g:'small'},{g:'loud'}],why:'Big and large both describe something of great size.'},
+   {q:'Which means the same as "happy"?',big:'😀',say:'Which word means the same as happy?',lang:'en-US',
+    opts:[{g:'glad',ok:1},{g:'sad'},{g:'tired'}],why:'Glad is another way to say happy.'},
+   {q:'Which means the same as "fast"?',big:'🏃',say:'Which word means the same as fast?',lang:'en-US',
+    opts:[{g:'quick',ok:1},{g:'slow'},{g:'heavy'}],why:'Quick and fast both mean moving at speed.'},
+   {q:'Which word means VERY cold?',big:'🥶',say:'Which word means very cold?',lang:'en-US',
+    opts:[{g:'freezing',ok:1},{g:'cool'},{g:'warm'}],why:'Cool is a little cold; freezing is very cold.'},
+   {q:'Which word means VERY happy?',big:'🥳',say:'Which word means very happy?',lang:'en-US',
+    opts:[{g:'delighted',ok:1},{g:'happy'},{g:'fine'}],why:'Delighted is stronger than happy — it means happy in a big way.'}
+  ]},
+ {id:'en_story2',title:'T1: Reading — The Lost Kitten',sub:'Comprehension & sequence',emoji:'🐈',sticker:'📚',a:[7],
+  slides:[
+   {t:'intro',emoji:'📚',title:'The Lost Kitten',text:'Read the story, then answer the questions about it.',say:'Read the story, then answer the questions about it.',lang:'en-US'},
+   {t:'story',title:'The Lost Kitten',emoji:'🐈',lang:'en-US',lines:[
+     {t:'On Monday, Sara heard a soft cry near the gate.',e:'👂',say:'On Monday, Sara heard a soft cry near the gate.'},
+     {t:'A small grey kitten was hiding under a box.',e:'📦',say:'A small grey kitten was hiding under a box.'},
+     {t:'Sara gave it warm milk, and it stopped crying.',e:'🥛',say:'Sara gave it warm milk, and it stopped crying.'},
+     {t:'Her mother helped her make a poster for the neighbours.',e:'📄',say:'Her mother helped her make a poster for the neighbours.'},
+     {t:'The next day, a boy came and hugged his lost kitten.',e:'🫂',say:'The next day, a boy came and hugged his lost kitten.'}],
+    moral:'Helping someone, even an animal, is always worth doing.',say:'Tap each line to hear the story.'},
+   {t:'practice',title:'Question 1',q:'Where was the kitten hiding?',say:'Where was the kitten hiding?',lang:'en-US',
+    opts:[{e:'📦',l:'Under a box',ok:1},{e:'🌳',l:'In a tree'},{e:'🚗',l:'Under a car'}]},
+   {t:'practice',title:'Question 2',q:'What did Sara give the kitten?',say:'What did Sara give the kitten?',lang:'en-US',
+    opts:[{e:'🥛',l:'Warm milk',ok:1},{e:'🍚',l:'Rice'},{e:'🍎',l:'An apple'}]},
+   {t:'sequence',title:'What happened first?',hint:'Put the story in order.',steps:[
+     {e:'👂',l:'Sara heard a cry'},{e:'📦',l:'She found the kitten'},{e:'🥛',l:'She gave it milk'},{e:'🫂',l:'The boy came'}],
+    say:'Put the story events in order.',lang:'en-US'}
+  ],
+  quiz:[
+   {q:'Where was the kitten hiding?',big:'📦',say:'Where was the kitten hiding?',lang:'en-US',
+    opts:[{g:'Under a box',ok:1},{g:'In a tree'},{g:'Under a car'}],why:'The story says the kitten was hiding under a box near the gate.'},
+   {q:'What did Sara give the kitten?',big:'🥛',say:'What did Sara give the kitten?',lang:'en-US',
+    opts:[{g:'Warm milk',ok:1},{g:'Rice'},{g:'Fish'}],why:'Sara gave it warm milk, and then it stopped crying.'},
+   {q:'Who helped Sara make the poster?',big:'📄',say:'Who helped Sara make the poster?',lang:'en-US',
+    opts:[{g:'Her mother',ok:1},{g:'Her teacher'},{g:'The boy'}],say2:'',why:'The story says her mother helped her make a poster for the neighbours.'},
+   {q:'What happened LAST?',big:'🫂',say:'What happened last in the story?',lang:'en-US',
+    opts:[{g:'A boy hugged his kitten',ok:1},{g:'Sara heard a cry'},{g:'Sara gave milk'}],why:'The last line tells us a boy came the next day and hugged his lost kitten.'},
+   {q:'What colour was the kitten?',big:'🐈',say:'What colour was the kitten?',lang:'en-US',
+    opts:[{g:'Grey',ok:1},{g:'Black'},{g:'Orange'}],why:'The story describes a small grey kitten.'}
+  ]}
+]);
+</script>
+<script>
+/* =====================================================================
+   LATIHAN PINTAR — mastery practice
+   A score that climbs fast at first and crawls near the top, drops on a
+   miss, and keeps serving questions from the whole subject until the
+   child reaches 100. Every wrong answer explains itself before moving on.
+   ===================================================================== */
+SCREENS.push('practice');
+
+let PR={sid:null,pool:[],i:0,score:0,answered:0,streak:0,best:0,locked:false,lastId:null};
+
+function smartBest(sid){
+  const p=profile(); if(!p||!p.smart) return 0;
+  return p.smart[sid]||0;
+}
+function smartSave(sid,score){
+  const p=profile(); if(!p) return;
+  if(!p.smart) p.smart={};
+  if(score>(p.smart[sid]||0)){ p.smart[sid]=score; save(K.prof,PROFILES); }
+}
+/* climbs quickly at the start, then a few points at a time near mastery */
+function smartGain(score){ return Math.max(2,Math.round((100-score)*0.22)); }
+/* a miss costs more the closer you are to the top */
+function smartLoss(score){ return Math.round(5+score*0.12); }
+
+function buildPool(sid){
+  const s=SUBJECTS.find(x=>x.id===sid); if(!s) return [];
+  const pool=[];
+  ageChapters(s).forEach(c=>{
+    (c.quiz||[]).forEach((q,qi)=>pool.push({q:q,c:c,s:s,id:c.id+'#'+qi}));
+  });
+  return shuffle(pool);
+}
+function startPractice(sid){
+  const s=SUBJECTS.find(x=>x.id===sid); if(!s) return;
+  PR={sid:sid,pool:buildPool(sid),i:0,score:0,answered:0,streak:0,best:smartBest(sid),locked:false,lastId:null};
+  if(!PR.pool.length){ toast('Tiada soalan untuk umur ini.'); return; }
+  renderPractice(); show('practice');
+}
+function practiceMeter(){
+  const sc=PR.score;
+  const col=sc>=100?'#22c55e':sc>=70?'#84cc16':sc>=40?'#f59e0b':'#fb7185';
+  return '<div class="flex items-center gap-3">'+
+    '<div class="flex-1">'+
+      '<div class="flex items-end justify-between"><span class="font-fun text-sm text-slate-500">Skor Pintar</span>'+
+      '<span class="font-fun text-3xl font-extrabold" style="color:'+col+'">'+sc+'<span class="text-lg text-slate-400">/100</span></span></div>'+
+      '<div class="mt-1 h-5 rounded-full bg-white/80 overflow-hidden shadow-inner">'+
+        '<div class="h-full rounded-full transition-all duration-500" style="width:'+sc+'%;background:'+col+'"></div></div>'+
+    '</div></div>';
+}
+function renderPractice(){
+  const s=SUBJECTS.find(x=>x.id===PR.sid);
+  if(PR.i>=PR.pool.length){ PR.pool=shuffle(PR.pool); PR.i=0; }      // endless: reshuffle
+  let item=PR.pool[PR.i];
+  if(PR.pool.length>1 && item.id===PR.lastId){ PR.i=(PR.i+1)%PR.pool.length; item=PR.pool[PR.i]; }
+  const q=item.q;
+  PR.cur=Object.assign({},q,{opts:shuffle(q.opts)});
+  PR.locked=false;
+  const long=PR.cur.opts.some(o=>!o.e&&!o.c&&!o.shape&&String(o.g||'').length>6);
+  const cols=(PR.cur.opts.length>=3&&!long)?'grid-cols-3':(PR.cur.opts.length>=3?'grid-cols-1':'grid-cols-2');
+  $('prHead').innerHTML=
+    '<p class="font-fun text-lg text-slate-600 truncate">'+s.emoji+' '+s.name+'</p>'+
+    '<p class="font-fun text-xs text-slate-400 truncate">'+item.c.title+'</p>';
+  $('prMeter').innerHTML=practiceMeter();
+  $('prStats').innerHTML='<span class="font-fun text-sm text-slate-500">'+PR.answered+' soalan · '+
+    (PR.streak>1?('🔥 '+PR.streak+' berturut'):('Terbaik: '+Math.max(PR.best,PR.score)+'%'))+'</span>';
+  $('prCard').innerHTML=
+    '<div class="bg-white rounded-5xl p-5 shadow-chunky text-center anim-in">'+
+      bigVisual(PR.cur,s)+
+      '<p class="font-fun text-2xl text-slate-700 mt-3 leading-snug">'+PR.cur.q+'</p>'+
+      '<button class="tapp saybtn min-h-[56px] px-5 rounded-4xl bg-indigo-50 text-indigo-500 font-fun text-base mt-3" data-say="'+esc(PR.cur.say||PR.cur.q)+'" data-lang="'+(PR.cur.lang||s.lang)+'">🔊 Dengar soalan</button>'+
+    '</div>'+
+    '<div class="grid '+cols+' gap-3 mt-4" id="prOpts">'+PR.cur.opts.map((o,i)=>
+      '<button class="tapp propt bg-white rounded-5xl shadow-chunky p-4 min-h-[112px] anim-in" style="animation-delay:'+(i*60)+'ms" data-i="'+i+'">'+optInner(o,s)+'</button>').join('')+'</div>';
+  $('prWhy').classList.add('hidden');
+  setTimeout(()=>speak(PR.cur.say||PR.cur.q,PR.cur.lang||s.lang),350);
+  $('prOpts').querySelectorAll('.propt').forEach(b=>b.addEventListener('click',()=>practiceAnswer(+b.dataset.i,b)));
+}
+function practiceAnswer(i,btn){
+  if(PR.locked) return; PR.locked=true;
+  const s=SUBJECTS.find(x=>x.id===PR.sid);
+  const q=PR.cur, ok=!!q.opts[i].ok;
+  PR.answered++; PR.lastId=PR.pool[PR.i].id;
+  const all=$('prOpts').querySelectorAll('.propt');
+  all.forEach(b=>b.disabled=true);
+  if(ok){
+    PR.streak++;
+    PR.score=Math.min(100,PR.score+smartGain(PR.score));
+    btn.className+=' ring-8 ring-emerald-300 bg-emerald-50';
+    sfx.correct(); haptic(30);
+    const r=btn.getBoundingClientRect();
+    burst((r.left+r.width/2)/window.innerWidth,(r.top+r.height/2)/window.innerHeight,45);
+    $('prMeter').innerHTML=practiceMeter();
+    if(PR.score>=100){ setTimeout(practiceMastered,700); return; }
+    setTimeout(()=>{ PR.i++; renderPractice(); },900);
+  }else{
+    PR.streak=0;
+    PR.score=Math.max(0,PR.score-smartLoss(PR.score));
+    btn.className+=' ring-8 ring-rose-300 bg-rose-50 shakey';
+    all.forEach((b,j)=>{ if(q.opts[j].ok) b.className+=' ring-8 ring-emerald-300 bg-emerald-50'; });
+    sfx.wrong(); haptic(60);
+    $('prMeter').innerHTML=practiceMeter();
+    const corr=q.opts.find(o=>o.ok), label=corr.l||corr.g||corr.e||'';
+    const why=q.why||('Jawapan yang betul ialah '+label+'.');
+    $('prWhy').innerHTML=
+      '<div class="bg-amber-50 border-4 border-amber-200 rounded-4xl p-4 text-left anim-in">'+
+        '<p class="font-fun text-lg text-amber-800">💡 Kenapa?</p>'+
+        '<p class="font-fun text-base text-slate-700 mt-1">'+why+'</p>'+
+        '<button id="prNext" class="tapp mt-3 w-full min-h-[64px] rounded-4xl bg-amber-500 text-white font-fun text-xl">Faham! Teruskan ❯</button>'+
+      '</div>';
+    $('prWhy').classList.remove('hidden');
+    setTimeout(()=>speak(why,q.lang||s.lang),420);
+    $('prNext').addEventListener('click',()=>{ sfx.click(); PR.i++; renderPractice(); });
+    $('prWhy').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+}
+function practiceMastered(){
+  const s=SUBJECTS.find(x=>x.id===PR.sid);
+  smartSave(PR.sid,100);
+  sfx.win(); bigBurst();
+  speak('Cemerlang! Kamu sudah kuasai '+s.name+'.','ms-MY');
+  $('prCard').innerHTML=
+    '<div class="bg-white rounded-5xl p-7 shadow-chunky text-center anim-in">'+
+      '<div class="text-7xl floaty">🏆</div>'+
+      '<h2 class="font-fun text-3xl font-extrabold text-emerald-600 mt-2">Skor Pintar 100!</h2>'+
+      '<p class="font-fun text-lg text-slate-500 mt-1">'+s.emoji+' '+s.name+' dikuasai</p>'+
+      '<p class="font-fun text-base text-slate-400 mt-2">'+PR.answered+' soalan dijawab dalam sesi ini</p>'+
+      '<div class="grid gap-3 mt-6">'+
+        '<button id="prAgain" class="tapp min-h-[68px] rounded-4xl bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-chunky font-fun text-xl">🔄 Latih Lagi</button>'+
+        '<button id="prPick" class="tapp min-h-[64px] rounded-4xl bg-white shadow-chunky font-fun text-lg text-indigo-500">Subjek Lain</button>'+
+        '<button id="prHome" class="tapp min-h-[64px] rounded-4xl bg-slate-100 font-fun text-lg text-slate-500">🏠 Menu Utama</button>'+
+      '</div></div>';
+  $('prWhy').classList.add('hidden');
+  $('prAgain').addEventListener('click',()=>{ sfx.click(); startPractice(PR.sid); });
+  $('prPick').addEventListener('click',()=>{ sfx.click(); openPracticePicker(); });
+  $('prHome').addEventListener('click',()=>{ sfx.click(); renderHome(); show('home'); });
+}
+
+/* ---------------- subject picker ---------------- */
+function openPracticePicker(){
+  const subs=ageSubjects().filter(s=>ageChapters(s).some(c=>c.quiz&&c.quiz.length));
+  $('pickList').innerHTML=subs.map((s,i)=>{
+    const b=smartBest(s.id);
+    const n=ageChapters(s).reduce((t,c)=>t+((c.quiz&&c.quiz.length)||0),0);
+    return '<button class="tapp gopr w-full text-left rounded-5xl p-4 shadow-chunky text-white anim-in" '+
+      'style="animation-delay:'+(i*50)+'ms;background:linear-gradient(135deg,'+s.from+','+s.to+')" data-id="'+s.id+'">'+
+      '<div class="flex items-center gap-3">'+
+        '<span class="text-4xl shrink-0">'+s.emoji+'</span>'+
+        '<span class="flex-1 min-w-0"><span class="block font-fun text-xl font-extrabold truncate">'+s.name+'</span>'+
+        '<span class="block font-fun text-xs text-white/80">'+n+' soalan tersedia</span></span>'+
+        (b>=100?'<span class="text-3xl">🏆</span>'
+               :'<span class="font-fun text-sm bg-white/25 px-3 py-1 rounded-full">'+(b?b+'%':'Baharu')+'</span>')+
+      '</div></button>';
+  }).join('');
+  $('modalPick').classList.remove('hidden');
+  $('pickList').querySelectorAll('.gopr').forEach(b=>b.addEventListener('click',()=>{
+    sfx.swoosh(); $('modalPick').classList.add('hidden'); startPractice(b.dataset.id);
+  }));
+}
+
+/* ---------------- entry points ---------------- */
+$('btnPractice').addEventListener('click',()=>{ sfx.click(); openPracticePicker(); });
+$('prSwitch').addEventListener('click',()=>{ sfx.click(); openPracticePicker(); });
+$('btnClosePick').addEventListener('click',()=>{ sfx.click(); $('modalPick').classList.add('hidden'); });
+$('modalPick').addEventListener('click',e=>{ if(e.target===$('modalPick')) $('modalPick').classList.add('hidden'); });
+</script>
+<script>
 /* ============================================================
    QUIZ ENGINE (FASA 2) — tap sahaja
    ============================================================ */
@@ -4194,7 +4806,9 @@ function feedback(ok,sub,cb){
   $('fbSub').textContent=sub||'';
   ov.classList.remove('hidden'); ov.classList.add('flex');
   box.classList.remove('anim-in'); void box.offsetWidth; box.classList.add('anim-in');
-  setTimeout(()=>{ ov.classList.add('hidden'); ov.classList.remove('flex'); if(cb) cb(); },ok?1050:1500);
+  // give a miss long enough to read AND hear its explanation
+  const hold = ok ? 1050 : Math.min(5000, 1600 + (sub?String(sub).length*42:0));
+  setTimeout(()=>{ ov.classList.add('hidden'); ov.classList.remove('flex'); if(cb) cb(); },hold);
 }
 function answer(i,btn){
   if(QZ.locked) return; QZ.locked=true;
@@ -4213,7 +4827,10 @@ function answer(i,btn){
     sfx.wrong(); haptic(60);
   }
   const corr=q.opts.find(o=>o.ok), label=corr.l||corr.g||corr.e||'';
-  feedback(ok, ok?'':'Jawapannya: '+label, ()=>{
+  // a miss should teach, not just mark: read out the explanation when there is one
+  const why=q.why||('Jawapannya: '+label);
+  if(!ok) setTimeout(()=>speak(why,q.lang||(SUBJECTS.find(x=>x.id===QZ.sid)||{}).lang),380);
+  feedback(ok, ok?'':why, ()=>{
     $('quizBar').style.width=((QZ.i+1)/QZ.qs.length*100)+'%';
     if(QZ.i<QZ.qs.length-1){ QZ.i++; renderQuestion(); } else finishQuiz();
   });
@@ -4500,8 +5117,20 @@ function renderDash(tab){
     '<div class="text-right"><p class="font-fun text-3xl font-extrabold text-slate-800">'+overallPct()+'%</p><p class="font-fun text-xs text-slate-400">silibus umur '+myAge()+'</p></div></div>';
 
   if(tab==='overview'){
+    const smart=ageSubjects().filter(s=>smartBest(s.id)>0);
     $('dashOverview').innerHTML=
       '<p class="font-fun text-sm text-slate-400 mb-3">Peratus dihitung berdasarkan bab untuk umur '+myAge()+' tahun sahaja.</p>'+
+      (smart.length
+        ? '<div class="bg-fuchsia-50 border-4 border-fuchsia-200 rounded-4xl p-4 mb-4">'+
+            '<p class="font-fun text-lg text-fuchsia-800">🎯 Latihan Pintar — skor terbaik</p>'+
+            '<div class="flex flex-wrap gap-2 mt-2">'+smart.map(s=>{
+              const b=smartBest(s.id);
+              return '<span class="font-fun text-sm px-3 py-1 rounded-full '+(b>=100?'bg-emerald-100 text-emerald-700':'bg-white text-slate-600')+'">'+
+                s.emoji+' '+s.name+': '+b+(b>=100?'% 🏆':'%')+'</span>';
+            }).join('')+'</div>'+
+            '<p class="font-fun text-xs text-slate-500 mt-2">Skor 100 bermaksud anak menjawab soalan campur dari seluruh subjek dengan konsisten.</p>'+
+          '</div>'
+        : '')+
       ageSubjects().map(s=>{
         const chs=ageChapters(s), pct=subjectPct(s);
         return '<div class="mb-4">'+
